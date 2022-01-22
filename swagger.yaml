@@ -1,0 +1,228 @@
+---
+openapi: 3.0.3
+info:
+  title: Schablone Server
+  description: E-Mail Template Management System
+  version: 0.0.1
+security:
+  - ApiKeyAuth: []
+paths:
+  user/list:
+    get:
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user ID
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  user/create:
+    get:
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user ID
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  user/get/{userId}:
+    get:
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user ID
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  user/set/{userId}:
+    get:
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The user ID
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  category/list:
+    get:
+      parameters:
+        - in: query
+          name: categoryId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The category ID
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  category/get/{categoryId}:
+    get:
+      parameters:
+        - in: path
+          name: categoryId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The category ID
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  category/create:
+    get:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Category title
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  template/create:
+    get:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Category title
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  template/edit:
+    get:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Category title
+      security:
+        - ApiKeyAuth: []
+      description: List all posts
+      responses:
+        '200':
+          description: Successfully fetched all posts from JSONPlaceholder
+  template/list:
+    get:
+      parameters:
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: List templates of specific group
+      responses:
+        '200':
+           description: Successfully fetched all posts from JSONPlaceholder
+           content:
+             application/json:
+               schema:
+                 type: array
+                 items:
+                   $ref: '#/components/schemas/Template'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        groupIds:
+          type: array
+          items:
+            type: int
+    Template:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        attachementIds:
+          type: array
+          items:
+            type: integer
+    Macro:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        parentId:
+          type: integer

@@ -1,0 +1,15 @@
+version: '3'
+services:
+  schablone-server:
+    build: ./src
+    restart: always
+    container_name: build_asinz
+    volumes:
+      - ./data/www/asinz.ch:/app/asinzwiki/public
+
+  postgresql:
+    image: postgres:14.1
+    restart: always
+    volumes:
+      - ./data/synapse:/data
+
