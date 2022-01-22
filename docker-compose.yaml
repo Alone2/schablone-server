@@ -1,15 +1,13 @@
 version: '3'
 services:
   schablone-server:
-    build: ./src
+    build: ./
     restart: always
-    container_name: build_asinz
-    volumes:
-      - ./data/www/asinz.ch:/app/asinzwiki/public
 
-  postgresql:
-    image: postgres:14.1
+  mariadb:
+    build: ./db
     restart: always
-    volumes:
-      - ./data/synapse:/data
-
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    env_file:
+      - .mariadb.env
