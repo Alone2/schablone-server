@@ -159,7 +159,7 @@ paths:
           description: The password
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Modify user data
       responses:
         '200':
           description: Successfully modified user
@@ -203,7 +203,7 @@ paths:
           description: The group ID
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Get group info
       responses:
         '200':
           description: Successfully fetched all posts from JSONPlaceholder
@@ -259,15 +259,15 @@ paths:
           description: Template content
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Create template
       responses:
         '200':
-          description: Successfully created template
+          description: Successfully created a template
         '400':
           description: Invalid request
         '405':
           description: No permission
-  /template/edit/checkout:
+  /template/edit/checkin:
     post:
       parameters:
         - in: query
@@ -300,15 +300,15 @@ paths:
           description: Template content
       security:
         - ApiKeyAuth: []
-      description: Check out template file to edit it, so that the server will not let someone else edit it at the same time
+      description: Modify template after check-out
       responses:
         '200':
-          description: Successfully checked out template
+          description: Successfully checked in template
         '400':
           description: Invalid arguments
         '405':
-          description: File already checked out or no permission
-  /template/edit/checkin:
+          description: File not checked out 
+  /template/edit/checkout:
     post:
       parameters:
         - in: query
@@ -320,14 +320,14 @@ paths:
           description: Template ID
       security:
         - ApiKeyAuth: []
-      description: Check in changes to a template
+      description: Mark template as being edited
       responses:
         '200':
           description: Successfully checked out template
         '400':
-          description: Invalid check in content
+          description: Invalid arguments
         '405':
-          description: File not checked out 
+          description: File already checked out or no permission
   /template/list:
     get:
       parameters:
