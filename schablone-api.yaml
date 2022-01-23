@@ -113,8 +113,7 @@ paths:
           description: Successfully fetched API key
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+              type: string
         '400':
           description: Invalid request
         '404':
