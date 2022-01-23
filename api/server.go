@@ -62,10 +62,23 @@ func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Reques
 
 // (POST /group/create)
 func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams) {
-	// api_key := w.Header().Get("X-API-Key")
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if !access {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
 
 	// Execute request
-	results, err := s.executeOnDB("INSERT INTO TemplateGroup(Name,ParentTempalteGroup) values (?,?)", params.Name, params.ParentGroupId)
+	results, err := s.executeOnDB("INSERT INTO TemplateGroup(Name,ParentTemplateGroup) values (?,?)", params.Name, params.ParentGroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -108,7 +121,23 @@ func (s *SchabloneServer) PostGroupRemoveUser(w http.ResponseWriter, r *http.Req
 
 // (POST /macro/create)
 func (s *SchabloneServer) PostMacroCreate(w http.ResponseWriter, r *http.Request, params PostMacroCreateParams) {
-	panic("not implemented") // TODO: Implement
+
+	// Execute request
+	templateId, err := s.executeOnDB("INSERT INTO Macro(Name,Content) values (?,?)", params.Name, params.Content)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	_, err = s.executeOnDB("INSERT INTO Macro_TemplateGroup(BelongsToMacro,TemplateGroup) values (?,?)", templateId, params.InitialGroup)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(templateId)
 }
 
 // (POST /macro/edit/checkin)
@@ -133,7 +162,23 @@ func (s *SchabloneServer) GetMacroList(w http.ResponseWriter, r *http.Request, p
 
 // (POST /template/create)
 func (s *SchabloneServer) PostTemplateCreate(w http.ResponseWriter, r *http.Request, params PostTemplateCreateParams) {
-	panic("not implemented") // TODO: Implement
+
+	// Execute request
+	templateId, err := s.executeOnDB("INSERT INTO Template(Name,Subject,Content) values (?,?,?)", params.Name, params.Subject, params.Content)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	_, err = s.executeOnDB("INSERT INTO Template_TemplateGroup(BelongsToTemplate,TemplateGroup) values (?,?)", templateId, params.InitialGroup)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(templateId)
 }
 
 // (POST /template/edit/checkin)

@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -22,10 +23,15 @@ func (s *SchabloneServer) initializeDB() error {
 	}
 	// Create Admin Group and User
 	if value < 1 {
-		_, err := s.executeOnDB("INSERT INTO TemplateGroup(Name) values (?)", "admin")
+		templateId, err := s.executeOnDB("INSERT INTO TemplateGroup(Name) values (?)", "admin")
 		if err != nil {
 			return err
 		}
+		userId, err := s.executeOnDB("INSERT INTO User(Firstname, Lastname, Username, Password) values (?,?,?,?)", "Admin", "Admin", "admin", "$2a$10$TSNVLUrKmA4vIG24w7I0wugKCPkSs.7M6E1R9iiZz6v1dHEWaeQ4e")
+		if err != nil {
+			return err
+		}
+		_, err = s.executeOnDB("INSERT INTO User_TemplateGroup(BelongsToUser, TemplateGroup, UserHasWriteAccess, UserHasUserModifyAccess) values (?,?,?,?)", userId, templateId, 1, 1)
 		return err
 	}
 	return nil
@@ -91,7 +97,7 @@ func (s *SchabloneServer) createUser(username string, firstname string, lastname
 // returns API Token
 func (s *SchabloneServer) verifyUser(username string, password string) (string, error) {
 	// Get password out of database
-	rows, err := s.queryDB("SELECT ID, Password FROM User WHERE Username=?", username)
+	rows, err := s.queryDB("SELECT Id, Password FROM User WHERE Username=?", username)
 	if err != nil {
 		log.Printf("Error %s", err)
 		return "", err
@@ -134,4 +140,27 @@ func (s *SchabloneServer) verifyUser(username string, password string) (string, 
 	}
 
 	return apiKey, nil
+}
+
+// verifies API Token
+func (s *SchabloneServer) verifyAPIToken(apiToken string) (bool, error) {
+	rows, err := s.queryDB("SELECT count(*) FROM ActiveAPIKey WHERE Content=?", apiToken)
+	if err != nil {
+		log.Printf("Error %s", err)
+		return false, err
+	}
+
+	var value int
+	for rows.Next() {
+		err := rows.Scan(&value)
+		if err != nil {
+			log.Printf("Error %s", err)
+			return false, err
+		}
+	}
+	fmt.Println(value)
+	if value >= 1 {
+		return true, nil
+	}
+	return false, nil
 }

@@ -59,11 +59,19 @@ docker-compose exec mariadb sh -c 'mysql -h 0.0.0.0 -u root -p '
 
 ### Populate Database With Quicktext Data
 <a name="debugging_populate"/>
-Prerequisites: You need to have python 3 installed.
+Prerequisites: You need to have python 3 installed and followed the following instructions:
+* [Python Scripts](#python)  
 
 ```
-./scripts/schablone-server-client/import_modules.py localhost:8080 ${API_TOKEN} quicktext_module.xml
-./scripts/schablone-server-client/import_templates.py localhost:8080 ${API_TOKEN} quicktext_template.xml
+# GET API token
+curl "http://0.0.0.0:8080/user/login?username=admin&password=12345"
+
+# Set it
+API_TOKEN="INSERT_TOKEN_HERE"
+
+# Import scripts
+./scripts/schablone-server-client/import_modules.py http://localhost:8080 ${API_TOKEN} quicktext_module.xml
+./scripts/schablone-server-client/import_templates.py http://localhost:8080 ${API_TOKEN} quicktext_template.xml
 ```
 
 ## Development

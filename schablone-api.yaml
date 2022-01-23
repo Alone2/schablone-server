@@ -434,7 +434,7 @@ paths:
                 type: integer
                 description: Macro ID
         '400':
-          description: Invalid request
+          description: Invalid request or macro does already exist
         '405':
           description: No permission
   /macro/edit/checkin:
