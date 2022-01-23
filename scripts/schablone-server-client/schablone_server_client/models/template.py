@@ -14,12 +14,16 @@ class Template:
         id (Union[Unset, int]):
         title (Union[Unset, str]):
         content (Union[Unset, str]):
+        subject (Union[Unset, str]):
+        is_being_edited_by (Union[Unset, int]):
         attachement_ids (Union[Unset, List[int]]):
     """
 
     id: Union[Unset, int] = UNSET
     title: Union[Unset, str] = UNSET
     content: Union[Unset, str] = UNSET
+    subject: Union[Unset, str] = UNSET
+    is_being_edited_by: Union[Unset, int] = UNSET
     attachement_ids: Union[Unset, List[int]] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
@@ -27,6 +31,8 @@ class Template:
         id = self.id
         title = self.title
         content = self.content
+        subject = self.subject
+        is_being_edited_by = self.is_being_edited_by
         attachement_ids: Union[Unset, List[int]] = UNSET
         if not isinstance(self.attachement_ids, Unset):
             attachement_ids = self.attachement_ids
@@ -40,6 +46,10 @@ class Template:
             field_dict["title"] = title
         if content is not UNSET:
             field_dict["content"] = content
+        if subject is not UNSET:
+            field_dict["subject"] = subject
+        if is_being_edited_by is not UNSET:
+            field_dict["isBeingEditedBy"] = is_being_edited_by
         if attachement_ids is not UNSET:
             field_dict["attachementIds"] = attachement_ids
 
@@ -54,12 +64,18 @@ class Template:
 
         content = d.pop("content", UNSET)
 
+        subject = d.pop("subject", UNSET)
+
+        is_being_edited_by = d.pop("isBeingEditedBy", UNSET)
+
         attachement_ids = cast(List[int], d.pop("attachementIds", UNSET))
 
         template = cls(
             id=id,
             title=title,
             content=content,
+            subject=subject,
+            is_being_edited_by=is_being_edited_by,
             attachement_ids=attachement_ids,
         )
 

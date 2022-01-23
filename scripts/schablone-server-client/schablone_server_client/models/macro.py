@@ -13,17 +13,20 @@ class Macro:
     Attributes:
         id (Union[Unset, int]):
         title (Union[Unset, str]):
+        is_being_edited_by (Union[Unset, int]):
         content (Union[Unset, str]):
     """
 
     id: Union[Unset, int] = UNSET
     title: Union[Unset, str] = UNSET
+    is_being_edited_by: Union[Unset, int] = UNSET
     content: Union[Unset, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
         title = self.title
+        is_being_edited_by = self.is_being_edited_by
         content = self.content
 
         field_dict: Dict[str, Any] = {}
@@ -33,6 +36,8 @@ class Macro:
             field_dict["id"] = id
         if title is not UNSET:
             field_dict["title"] = title
+        if is_being_edited_by is not UNSET:
+            field_dict["isBeingEditedBy"] = is_being_edited_by
         if content is not UNSET:
             field_dict["content"] = content
 
@@ -45,11 +50,14 @@ class Macro:
 
         title = d.pop("title", UNSET)
 
+        is_being_edited_by = d.pop("isBeingEditedBy", UNSET)
+
         content = d.pop("content", UNSET)
 
         macro = cls(
             id=id,
             title=title,
+            is_being_edited_by=is_being_edited_by,
             content=content,
         )
 

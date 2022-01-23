@@ -3,8 +3,8 @@
 import sys
 import xml.etree.ElementTree as ET
 
-from schablone_server_client.api.default import post_group_create, post_template_create
 from schablone_server_client import AuthenticatedClient
+from schablone_server_client.api.default import post_group_create, post_template_create
 
 client = None
 
@@ -30,7 +30,7 @@ def importXML(xml_file_name: str):
             except:
                 pass
             # send to server
-            template_id : int = post_template_create.sync(
+            template_id: int = post_template_create.sync(
                 client=client,
                 name=template_name,
                 subject=template_subject,
@@ -39,13 +39,14 @@ def importXML(xml_file_name: str):
             )
             print("Added Template", template_name, "with ID", template_id)
 
+
 # Start of script
 # Syntax ./import_templates.py ${BASE_URL_OF_SERVER} ${TOKEN} ${XML_FILES}
 if __name__ == "__main__":
     base_url = sys.argv[1]
     token = sys.argv[2]
     client = AuthenticatedClient(base_url, token=token)
-    client.headers = { "X-API-Key" : token}
+    client.headers = {"X-API-Key": token}
     print(client.get_headers())
     for i in range(3, len(sys.argv)):
         xml_path = sys.argv[i]
