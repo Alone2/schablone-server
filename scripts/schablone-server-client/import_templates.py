@@ -15,7 +15,6 @@ def importXML(xml_file_name: str):
     # Groups
     for menu in root.iter("menu"):
         group_title = menu.find("title").text
-
         response: int = post_group_create.sync(client=client, name=group_title, parent_group_id=1)
         print("Added Group", group_title, "with ID", response)
         # Templates in these groups
@@ -24,8 +23,11 @@ def importXML(xml_file_name: str):
             template_name = " "
             template_subject = " "
             try:
-                template_content = texts.find("body").text
                 template_name = texts.find("name").text
+                template_content = texts.find("body").text
+            except:
+                pass
+            try:
                 template_subject = texts.find("subject").text
             except:
                 pass
