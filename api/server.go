@@ -1163,8 +1163,8 @@ func (s *SchabloneServer) PostUserModifyUserId(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	if !(access == 0 || access == int64(userId)) {
-		log.Printf("Error %s", err)
+	if !(access == 1 || access == int64(userId)) {
+		log.Printf("Access denied")
 		w.WriteHeader(405)
 		return
 	}
