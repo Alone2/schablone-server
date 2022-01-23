@@ -16,11 +16,23 @@ import (
 )
 
 func main() {
-	argumentPort := os.Args[0]
+	// Check if all arguments here
+	argLength := len(os.Args)
+	if argLength < 5 {
+		fmt.Fprintf(os.Stderr, "Arguments missing, launch the application like this ./schablone-server ${PORT} ${MARIADB_USER} ${MARIADB_PASSWORD} ${MARIADB_HOST}")
+		os.Exit(1)
+	}
+
+	argumentPort := os.Args[1]
+	mariadbUser := os.Args[2]
+	mariadbPassword := os.Args[3]
+	mariadbHost := os.Args[4]
+
+	// Check if port valid
 	intPort, err := strconv.Atoi(argumentPort)
 	fmt.Println(intPort)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Missing port, launch the application like this ./schablone-server ${PORT}")
+		fmt.Fprintf(os.Stderr, "Invalid port, launch the application like this ./schablone-server ${PORT} ${MARIADB_USER} ${MARIADB_PASSWORD} ${MARIADB_HOST}")
 		os.Exit(1)
 	}
 
@@ -38,7 +50,7 @@ func main() {
 	swagger.Servers = nil
 
 	// Create an instance of our handler which satisfies the generated interface
-	schabloneServer := SchabloneApi.NewSchabloneServer()
+	schabloneServer := SchabloneApi.NewSchabloneServer(mariadbUser, mariadbPassword, mariadbHost)
 
 	// This is how you set up a basic chi router
 	r := chi.NewRouter()

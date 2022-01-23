@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Union, cast
 
 import httpx
 
@@ -40,12 +40,25 @@ def _get_kwargs(
     }
 
 
-def _build_response(*, response: httpx.Response) -> Response[Any]:
+def _parse_response(*, response: httpx.Response) -> Optional[Union[Any, int]]:
+    if response.status_code == 200:
+        response_200 = cast(int, response.json())
+        return response_200
+    if response.status_code == 400:
+        response_400 = cast(Any, None)
+        return response_400
+    if response.status_code == 405:
+        response_405 = cast(Any, None)
+        return response_405
+    return None
+
+
+def _build_response(*, response: httpx.Response) -> Response[Union[Any, int]]:
     return Response(
         status_code=response.status_code,
         content=response.content,
         headers=response.headers,
-        parsed=None,
+        parsed=_parse_response(response=response),
     )
 
 
@@ -56,7 +69,7 @@ def sync_detailed(
     firstname: str,
     lastname: str,
     password: str,
-) -> Response[Any]:
+) -> Response[Union[Any, int]]:
     """Create a new user
 
     Args:
@@ -66,7 +79,7 @@ def sync_detailed(
         password (str):
 
     Returns:
-        Response[Any]
+        Response[Union[Any, int]]
     """
 
     kwargs = _get_kwargs(
@@ -85,14 +98,14 @@ def sync_detailed(
     return _build_response(response=response)
 
 
-async def asyncio_detailed(
+def sync(
     *,
     client: AuthenticatedClient,
     username: str,
     firstname: str,
     lastname: str,
     password: str,
-) -> Response[Any]:
+) -> Optional[Union[Any, int]]:
     """Create a new user
 
     Args:
@@ -102,7 +115,36 @@ async def asyncio_detailed(
         password (str):
 
     Returns:
-        Response[Any]
+        Response[Union[Any, int]]
+    """
+
+    return sync_detailed(
+        client=client,
+        username=username,
+        firstname=firstname,
+        lastname=lastname,
+        password=password,
+    ).parsed
+
+
+async def asyncio_detailed(
+    *,
+    client: AuthenticatedClient,
+    username: str,
+    firstname: str,
+    lastname: str,
+    password: str,
+) -> Response[Union[Any, int]]:
+    """Create a new user
+
+    Args:
+        username (str):
+        firstname (str):
+        lastname (str):
+        password (str):
+
+    Returns:
+        Response[Union[Any, int]]
     """
 
     kwargs = _get_kwargs(
@@ -117,3 +159,34 @@ async def asyncio_detailed(
         response = await _client.request(**kwargs)
 
     return _build_response(response=response)
+
+
+async def asyncio(
+    *,
+    client: AuthenticatedClient,
+    username: str,
+    firstname: str,
+    lastname: str,
+    password: str,
+) -> Optional[Union[Any, int]]:
+    """Create a new user
+
+    Args:
+        username (str):
+        firstname (str):
+        lastname (str):
+        password (str):
+
+    Returns:
+        Response[Union[Any, int]]
+    """
+
+    return (
+        await asyncio_detailed(
+            client=client,
+            username=username,
+            firstname=firstname,
+            lastname=lastname,
+            password=password,
+        )
+    ).parsed

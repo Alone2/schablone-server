@@ -6,6 +6,7 @@ require (
 	github.com/deepmap/oapi-codegen v1.9.1
 	github.com/getkin/kin-openapi v0.87.0
 	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-sql-driver/mysql v1.6.0
 )
 
 require (

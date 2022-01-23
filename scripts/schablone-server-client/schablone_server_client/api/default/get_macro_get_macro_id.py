@@ -1,50 +1,40 @@
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, Optional
 
 import httpx
 
 from ...client import AuthenticatedClient
-from ...types import UNSET, Response
+from ...models.macro import Macro
+from ...types import Response
 
 
 def _get_kwargs(
+    macro_id: int,
     *,
     client: AuthenticatedClient,
-    name: str,
 ) -> Dict[str, Any]:
-    url = "{}/group/create".format(client.base_url)
+    url = "{}/macro/get/{macroId}".format(client.base_url, macroId=macro_id)
 
     headers: Dict[str, str] = client.get_headers()
     cookies: Dict[str, Any] = client.get_cookies()
 
-    params: Dict[str, Any] = {}
-    params["name"] = name
-
-    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
     return {
-        "method": "post",
+        "method": "get",
         "url": url,
         "headers": headers,
         "cookies": cookies,
         "timeout": client.get_timeout(),
-        "params": params,
     }
 
 
-def _parse_response(*, response: httpx.Response) -> Optional[Union[Any, int]]:
+def _parse_response(*, response: httpx.Response) -> Optional[Macro]:
     if response.status_code == 200:
-        response_200 = cast(int, response.json())
+        response_200 = Macro.from_dict(response.json())
+
         return response_200
-    if response.status_code == 405:
-        response_405 = cast(Any, None)
-        return response_405
-    if response.status_code == 400:
-        response_400 = cast(Any, None)
-        return response_400
     return None
 
 
-def _build_response(*, response: httpx.Response) -> Response[Union[Any, int]]:
+def _build_response(*, response: httpx.Response) -> Response[Macro]:
     return Response(
         status_code=response.status_code,
         content=response.content,
@@ -54,22 +44,22 @@ def _build_response(*, response: httpx.Response) -> Response[Union[Any, int]]:
 
 
 def sync_detailed(
+    macro_id: int,
     *,
     client: AuthenticatedClient,
-    name: str,
-) -> Response[Union[Any, int]]:
-    """Create group
+) -> Response[Macro]:
+    """Get a macro
 
     Args:
-        name (str):
+        macro_id (int):
 
     Returns:
-        Response[Union[Any, int]]
+        Response[Macro]
     """
 
     kwargs = _get_kwargs(
+        macro_id=macro_id,
         client=client,
-        name=name,
     )
 
     response = httpx.request(
@@ -81,42 +71,42 @@ def sync_detailed(
 
 
 def sync(
+    macro_id: int,
     *,
     client: AuthenticatedClient,
-    name: str,
-) -> Optional[Union[Any, int]]:
-    """Create group
+) -> Optional[Macro]:
+    """Get a macro
 
     Args:
-        name (str):
+        macro_id (int):
 
     Returns:
-        Response[Union[Any, int]]
+        Response[Macro]
     """
 
     return sync_detailed(
+        macro_id=macro_id,
         client=client,
-        name=name,
     ).parsed
 
 
 async def asyncio_detailed(
+    macro_id: int,
     *,
     client: AuthenticatedClient,
-    name: str,
-) -> Response[Union[Any, int]]:
-    """Create group
+) -> Response[Macro]:
+    """Get a macro
 
     Args:
-        name (str):
+        macro_id (int):
 
     Returns:
-        Response[Union[Any, int]]
+        Response[Macro]
     """
 
     kwargs = _get_kwargs(
+        macro_id=macro_id,
         client=client,
-        name=name,
     )
 
     async with httpx.AsyncClient(verify=client.verify_ssl) as _client:
@@ -126,22 +116,22 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+    macro_id: int,
     *,
     client: AuthenticatedClient,
-    name: str,
-) -> Optional[Union[Any, int]]:
-    """Create group
+) -> Optional[Macro]:
+    """Get a macro
 
     Args:
-        name (str):
+        macro_id (int):
 
     Returns:
-        Response[Union[Any, int]]
+        Response[Macro]
     """
 
     return (
         await asyncio_detailed(
+            macro_id=macro_id,
             client=client,
-            name=name,
         )
     ).parsed

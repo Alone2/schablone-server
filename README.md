@@ -14,7 +14,10 @@ cd schablone-server
 
 # Set mysql root password
 read password
-echo "MARIADB_ROOT_PASSWORD: $password" > .mariadb.env
+echo "MARIADB_ROOT_PASSWORD: $password
+MARIADB_USER_PASSWORD: $password
+MARIADB_USER_NAME: root
+MARIADB_HOST=mariadb" > .mariadb.env
 
 # Start server
 docker-compose up -d
@@ -31,8 +34,8 @@ docker-compose exec mariadb sh -c 'mysql -h 0.0.0.0 -u root -p '
 Prerequisites: You need to have python 3 installed.
 
 ```
-./scripts/import_modules.py quicktext_module.xml
-./scripts/import_templates.py quicktext_template.xml
+./scripts/schablone-server-client/import_modules.py localhost:8080 ${API_TOKEN} quicktext_module.xml
+./scripts/schablone-server-client/import_templates.py localhost:8080 ${API_TOKEN} quicktext_template.xml
 ```
 
 ## Development
@@ -50,13 +53,17 @@ go test
 ```
 
 ### Python scripts
-Install dependencies:
-```
-pip install openapi-python-client
-```
-
-Genereate python api to access server:
+Setup virtual environement and install dependencies:
 ```
 cd scripts
+python -m venv schablone-python
+source schablone-python/bin/activate
+pip install -r requirements.txt
+```
+
+Update python client api:
+```
+cd scripts
+source schablone-python/bin/activate
 openapi-python-client update --path ../schablone-api.yaml
 ```

@@ -15,6 +15,18 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
+	// (POST /group/add_macro)
+	PostGroupAddMacro(w http.ResponseWriter, r *http.Request, params PostGroupAddMacroParams)
+
+	// (POST /group/add_parent_group)
+	PostGroupAddParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupAddParentGroupParams)
+
+	// (POST /group/add_template)
+	PostGroupAddTemplate(w http.ResponseWriter, r *http.Request, params PostGroupAddTemplateParams)
+
+	// (POST /group/add_user)
+	PostGroupAddUser(w http.ResponseWriter, r *http.Request, params PostGroupAddUserParams)
+
 	// (POST /group/create)
 	PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams)
 
@@ -23,6 +35,33 @@ type ServerInterface interface {
 
 	// (GET /group/list)
 	GetGroupList(w http.ResponseWriter, r *http.Request, params GetGroupListParams)
+
+	// (POST /group/remove_macro)
+	PostGroupRemoveMacro(w http.ResponseWriter, r *http.Request, params PostGroupRemoveMacroParams)
+
+	// (POST /group/remove_parent_group)
+	PostGroupRemoveParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupRemoveParentGroupParams)
+
+	// (POST /group/remove_template)
+	PostGroupRemoveTemplate(w http.ResponseWriter, r *http.Request, params PostGroupRemoveTemplateParams)
+
+	// (POST /group/remove_user)
+	PostGroupRemoveUser(w http.ResponseWriter, r *http.Request, params PostGroupRemoveUserParams)
+
+	// (POST /macro/create)
+	PostMacroCreate(w http.ResponseWriter, r *http.Request, params PostMacroCreateParams)
+
+	// (POST /macro/edit/checkin)
+	PostMacroEditCheckin(w http.ResponseWriter, r *http.Request, params PostMacroEditCheckinParams)
+
+	// (POST /macro/edit/checkout)
+	PostMacroEditCheckout(w http.ResponseWriter, r *http.Request, params PostMacroEditCheckoutParams)
+
+	// (GET /macro/get/{macroId})
+	GetMacroGetMacroId(w http.ResponseWriter, r *http.Request, macroId int)
+
+	// (GET /macro/list)
+	GetMacroList(w http.ResponseWriter, r *http.Request, params GetMacroListParams)
 
 	// (POST /template/create)
 	PostTemplateCreate(w http.ResponseWriter, r *http.Request, params PostTemplateCreateParams)
@@ -63,6 +102,206 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
+
+// PostGroupAddMacro operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupAddMacro(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupAddMacroParams
+
+	// ------------- Required query parameter "macroId" -------------
+	if paramValue := r.URL.Query().Get("macroId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "macroId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "macroId", r.URL.Query(), &params.MacroId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupAddMacro(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostGroupAddParentGroup operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupAddParentGroup(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupAddParentGroupParams
+
+	// ------------- Required query parameter "parentGroupId" -------------
+	if paramValue := r.URL.Query().Get("parentGroupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "parentGroupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "parentGroupId", r.URL.Query(), &params.ParentGroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "parentGroupId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupAddParentGroup(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostGroupAddTemplate operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupAddTemplate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupAddTemplateParams
+
+	// ------------- Required query parameter "templateId" -------------
+	if paramValue := r.URL.Query().Get("templateId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "templateId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "templateId", r.URL.Query(), &params.TemplateId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "templateId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupAddTemplate(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostGroupAddUser operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupAddUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupAddUserParams
+
+	// ------------- Required query parameter "userId" -------------
+	if paramValue := r.URL.Query().Get("userId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "userId", r.URL.Query(), &params.UserId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupAddUser(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
 
 // PostGroupCreate operation middleware
 func (siw *ServerInterfaceWrapper) PostGroupCreate(w http.ResponseWriter, r *http.Request) {
@@ -164,6 +403,434 @@ func (siw *ServerInterfaceWrapper) GetGroupList(w http.ResponseWriter, r *http.R
 	handler(w, r.WithContext(ctx))
 }
 
+// PostGroupRemoveMacro operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupRemoveMacroParams
+
+	// ------------- Required query parameter "macroId" -------------
+	if paramValue := r.URL.Query().Get("macroId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "macroId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "macroId", r.URL.Query(), &params.MacroId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupRemoveMacro(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostGroupRemoveParentGroup operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupRemoveParentGroup(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupRemoveParentGroupParams
+
+	// ------------- Required query parameter "parentGroupId" -------------
+	if paramValue := r.URL.Query().Get("parentGroupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "parentGroupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "parentGroupId", r.URL.Query(), &params.ParentGroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "parentGroupId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupRemoveParentGroup(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostGroupRemoveTemplate operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupRemoveTemplate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupRemoveTemplateParams
+
+	// ------------- Required query parameter "templateId" -------------
+	if paramValue := r.URL.Query().Get("templateId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "templateId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "templateId", r.URL.Query(), &params.TemplateId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "templateId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupRemoveTemplate(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostGroupRemoveUser operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupRemoveUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupRemoveUserParams
+
+	// ------------- Required query parameter "userId" -------------
+	if paramValue := r.URL.Query().Get("userId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "userId", r.URL.Query(), &params.UserId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupRemoveUser(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostMacroCreate operation middleware
+func (siw *ServerInterfaceWrapper) PostMacroCreate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostMacroCreateParams
+
+	// ------------- Required query parameter "name" -------------
+	if paramValue := r.URL.Query().Get("name"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "name"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "name", r.URL.Query(), &params.Name)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "content" -------------
+	if paramValue := r.URL.Query().Get("content"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "content"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "content", r.URL.Query(), &params.Content)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "content", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "initialGroup" -------------
+	if paramValue := r.URL.Query().Get("initialGroup"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "initialGroup"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "initialGroup", r.URL.Query(), &params.InitialGroup)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "initialGroup", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostMacroCreate(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostMacroEditCheckin operation middleware
+func (siw *ServerInterfaceWrapper) PostMacroEditCheckin(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostMacroEditCheckinParams
+
+	// ------------- Required query parameter "macroId" -------------
+	if paramValue := r.URL.Query().Get("macroId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "macroId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "macroId", r.URL.Query(), &params.MacroId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "name" -------------
+	if paramValue := r.URL.Query().Get("name"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "name"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "name", r.URL.Query(), &params.Name)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "content" -------------
+	if paramValue := r.URL.Query().Get("content"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "content"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "content", r.URL.Query(), &params.Content)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "content", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostMacroEditCheckin(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostMacroEditCheckout operation middleware
+func (siw *ServerInterfaceWrapper) PostMacroEditCheckout(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostMacroEditCheckoutParams
+
+	// ------------- Required query parameter "macroId" -------------
+	if paramValue := r.URL.Query().Get("macroId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "macroId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "macroId", r.URL.Query(), &params.MacroId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostMacroEditCheckout(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetMacroGetMacroId operation middleware
+func (siw *ServerInterfaceWrapper) GetMacroGetMacroId(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "macroId" -------------
+	var macroId int
+
+	err = runtime.BindStyledParameter("simple", false, "macroId", chi.URLParam(r, "macroId"), &macroId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "macroId", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMacroGetMacroId(w, r, macroId)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetMacroList operation middleware
+func (siw *ServerInterfaceWrapper) GetMacroList(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMacroListParams
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMacroList(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // PostTemplateCreate operation middleware
 func (siw *ServerInterfaceWrapper) PostTemplateCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -214,6 +881,20 @@ func (siw *ServerInterfaceWrapper) PostTemplateCreate(w http.ResponseWriter, r *
 	err = runtime.BindQueryParameter("form", true, true, "content", r.URL.Query(), &params.Content)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "content", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "initialGroup" -------------
+	if paramValue := r.URL.Query().Get("initialGroup"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "initialGroup"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "initialGroup", r.URL.Query(), &params.InitialGroup)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "initialGroup", Err: err})
 		return
 	}
 
@@ -780,6 +1461,18 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/add_macro", wrapper.PostGroupAddMacro)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/add_parent_group", wrapper.PostGroupAddParentGroup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/add_template", wrapper.PostGroupAddTemplate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/add_user", wrapper.PostGroupAddUser)
+	})
+	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/group/create", wrapper.PostGroupCreate)
 	})
 	r.Group(func(r chi.Router) {
@@ -787,6 +1480,33 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/group/list", wrapper.GetGroupList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/remove_macro", wrapper.PostGroupRemoveMacro)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/remove_parent_group", wrapper.PostGroupRemoveParentGroup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/remove_template", wrapper.PostGroupRemoveTemplate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/remove_user", wrapper.PostGroupRemoveUser)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/macro/create", wrapper.PostMacroCreate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/macro/edit/checkin", wrapper.PostMacroEditCheckin)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/macro/edit/checkout", wrapper.PostMacroEditCheckout)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/macro/get/{macroId}", wrapper.GetMacroGetMacroId)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/macro/list", wrapper.GetMacroList)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/template/create", wrapper.PostTemplateCreate)

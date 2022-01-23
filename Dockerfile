@@ -7,5 +7,8 @@ RUN go get -d -v . && \
     go build -v .
 
 ENV PORT=8080
+ENV MARIADB_USER_NAME=8080
+ENV MARIADB_USER_PASSWORD=8080
+ENV MARIADB_HOST=mariadb
 
-CMD ./schablone-server $PORT
+CMD ./schablone-server $PORT $MARIADB_USER_NAME $MARIADB_USER_PASSWORD $MARIADB_HOST

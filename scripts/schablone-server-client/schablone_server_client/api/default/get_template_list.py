@@ -59,7 +59,7 @@ def sync_detailed(
     client: AuthenticatedClient,
     group_id: int,
 ) -> Response[List[Template]]:
-    """List templates of specific group
+    """List templates of a specific group
 
     Args:
         group_id (int):
@@ -86,7 +86,7 @@ def sync(
     client: AuthenticatedClient,
     group_id: int,
 ) -> Optional[List[Template]]:
-    """List templates of specific group
+    """List templates of a specific group
 
     Args:
         group_id (int):
@@ -106,7 +106,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     group_id: int,
 ) -> Response[List[Template]]:
-    """List templates of specific group
+    """List templates of a specific group
 
     Args:
         group_id (int):
@@ -131,7 +131,7 @@ async def asyncio(
     client: AuthenticatedClient,
     group_id: int,
 ) -> Optional[List[Template]]:
-    """List templates of specific group
+    """List templates of a specific group
 
     Args:
         group_id (int):
