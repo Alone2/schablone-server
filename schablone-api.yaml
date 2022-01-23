@@ -268,6 +268,13 @@ paths:
             type: string
             minimum: 1
           description: Template content
+        - in: query
+          name: initialGroup
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Group ID of the templates parent group
       security:
         - ApiKeyAuth: []
       description: Create template
@@ -355,7 +362,7 @@ paths:
           description: Group ID
       security:
         - ApiKeyAuth: []
-      description: List templates of specific group
+      description: List templates of a specific group
       responses:
         '200':
           description: Successfully fetched all templates
@@ -373,7 +380,7 @@ paths:
           required: true
           schema:
             type: integer
-          description: Group ID
+          description: Template ID
       security:
         - ApiKeyAuth: []
       description: Get a template
@@ -384,6 +391,339 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+  /macro/create:
+    post:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Macro title
+        - in: query
+          name: content
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Macro content
+        - in: query
+          name: initialGroup
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Group ID of the templates parent group
+      security:
+        - ApiKeyAuth: []
+      description: Create macro
+      responses:
+        '200':
+          description: Successfully created a macro
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Macro ID
+        '400':
+          description: Invalid request
+        '405':
+          description: No permission
+  /macro/edit/checkin:
+    post:
+      parameters:
+        - in: query
+          name: macroId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Macro ID
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Macro title
+        - in: query
+          name: content
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Macro content
+      security:
+        - ApiKeyAuth: []
+      description: Modify macro after check-out
+      responses:
+        '200':
+          description: Successfully checked in macro
+        '400':
+          description: Invalid arguments
+        '405':
+          description: Macro not checked out 
+  /macro/edit/checkout:
+    post:
+      parameters:
+        - in: query
+          name: macroId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Macro ID
+      security:
+        - ApiKeyAuth: []
+      description: Mark macro as being edited
+      responses:
+        '200':
+          description: Successfully checked out macro
+        '400':
+          description: Invalid arguments
+        '405':
+          description: Macro already checked out or no permission
+  /macro/list:
+    get:
+      parameters:
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: List macros of a specific group
+      responses:
+        '200':
+          description: Successfully fetched all macros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Macro'
+  /macro/get/{macroId}:
+    get:
+      parameters:
+        - in: path
+          name: macroId
+          required: true
+          schema:
+            type: integer
+          description: Macro ID
+      security:
+        - ApiKeyAuth: []
+      description: Get a macro
+      responses:
+        '200':
+          description: Successfully fetched macro
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Macro'
+  /group/add_macro:
+    post:
+      parameters:
+        - in: query
+          name: macroId
+          required: true
+          schema:
+            type: integer
+          description: Macro ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Add macro to group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/remove_macro:
+    post:
+      parameters:
+        - in: query
+          name: macroId
+          required: true
+          schema:
+            type: integer
+          description: Macro ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Remove macro from group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/add_template:
+    post:
+      parameters:
+        - in: query
+          name: templateId
+          required: true
+          schema:
+            type: integer
+          description: Template ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Add template to group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/remove_template:
+    post:
+      parameters:
+        - in: query
+          name: templateId
+          required: true
+          schema:
+            type: integer
+          description: Template ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Remove template from group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/add_user:
+    post:
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: integer
+          description: User ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Add user to group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/remove_user:
+    post:
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: integer
+          description: User ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Remove user from group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/add_parent_group:
+    post:
+      parameters:
+        - in: query
+          name: parentGroupId
+          required: true
+          schema:
+            type: integer
+          description: Parent Group ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Add group parent to group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
+  /group/remove_parent_group:
+    post:
+      parameters:
+        - in: query
+          name: parentGroupId
+          required: true
+          schema:
+            type: integer
+          description: Parent Group ID
+        - in: query
+          name: groupId
+          required: true
+          schema:
+            type: integer
+          description: Group ID
+      security:
+        - ApiKeyAuth: []
+      description: Remove group parent from group
+      responses:
+        '200':
+          description: Successfully changed group
+        '400':
+          description: Invalid arguments
+        '405':
+          description: No permission or action has already taken place
 
 components:
   securitySchemes:
