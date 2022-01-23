@@ -14,7 +14,7 @@ def importXML(xml_file_name: str):
     tree = ET.parse(xml_file_name)
     root = tree.getroot()
 
-    group_name = xml_file_name.split("/")[::-1]
+    group_name = xml_file_name.split("/")[::-1][0].split(".")[0]
     response: int = post_group_create.sync(client=client, name=group_name, parent_group_id=1)
     print("Added Group", group_name, "with ID", response)
 
@@ -25,14 +25,14 @@ def importXML(xml_file_name: str):
             content = texts.find("body").text
         except:
             pass
-        name = texts.find("name").text
+        name = menu.find("name").text
         macroId : int = post_macro_create.sync(
             client=client,
             name=name,
-            content=template_content,
+            content=content,
             initial_group=response,
         )
-        print("Added Macro", macro_title, "with ID", macroId)
+        print("Added Macro", name, "with ID", macroId)
 
 # Start of script
 # Syntax ./import_tempaltes.py ${BASE_URL_OF_SERVER} ${TOKEN} ${XML_FILES}
