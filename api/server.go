@@ -38,11 +38,6 @@ func NewSchabloneServer(mariadbUsername string, mariadbPassword string, mariadbH
 	return s
 }
 
-// No permissions
-func (s *SchabloneServer) noPermissions(w http.ResponseWriter) {
-	w.WriteHeader(405)
-}
-
 // VS-Code: Generate Interface : s *SchabloneServer ServerInterface
 
 // (POST /group/add_macro)
@@ -271,8 +266,8 @@ func (s *SchabloneServer) PostMacroEditCheckin(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// Update checkout
-	_, err = s.executeOnDB("Update Macro SET isBeingEditedBy=? WHERE Id=?", access, params.MacroId)
+	// Update checkin
+	_, err = s.executeOnDB("Update Macro SET IsBeingEditedBy=?, Name=?, Content=? WHERE Id=?", nil, params.Name, params.Content, params.MacroId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(405)
@@ -300,7 +295,7 @@ func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.R
 	}
 
 	// Update checkout
-	_, err = s.executeOnDB("Update Macro SET isBeingEditedBy=? WHERE Id=?", access, params.MacroId)
+	_, err = s.executeOnDB("Update Macro SET IsBeingEditedBy=? WHERE Id=?", access, params.MacroId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(405)
@@ -386,7 +381,29 @@ func (s *SchabloneServer) PostTemplateCreate(w http.ResponseWriter, r *http.Requ
 // (POST /template/edit/checkin)
 func (s *SchabloneServer) PostTemplateEditCheckin(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckinParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	panic("not implemented") // TODO: Implement
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Update checkin
+	_, err = s.executeOnDB("UPDATE Template SET IsBeingEditedBy=?, Content=?, Subject=? WHERE Id=?", nil, params.Content, params.Name, params.Subject, params.TemplateId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // (POST /template/edit/checkout)
@@ -408,7 +425,7 @@ func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *htt
 	}
 
 	// Update checkout
-	_, err = s.executeOnDB("Update Template SET isBeingEditedBy=? WHERE Id=?", access, params.TemplateId)
+	_, err = s.executeOnDB("Update Template SET IsBeingEditedBy=? WHERE Id=?", access, params.TemplateId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(405)
