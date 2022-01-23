@@ -7,6 +7,13 @@ const (
 	ApiKeyAuthScopes = "ApiKeyAuth.Scopes"
 )
 
+// Group defines model for Group.
+type Group struct {
+	Id       *int    `json:"id,omitempty"`
+	Name     *string `json:"name,omitempty"`
+	ParentId *int    `json:"parentId,omitempty"`
+}
+
 // Template defines model for Template.
 type Template struct {
 	AttachementIds *[]int  `json:"attachementIds,omitempty"`
@@ -15,28 +22,58 @@ type Template struct {
 	Title          *string `json:"title,omitempty"`
 }
 
-// GetCategoryCreateParams defines parameters for GetCategoryCreate.
-type GetCategoryCreateParams struct {
-	// Category title
+// User defines model for User.
+type User struct {
+	Firstname *string `json:"firstname,omitempty"`
+	GroupIds  *[]int  `json:"groupIds,omitempty"`
+	Id        *int    `json:"id,omitempty"`
+	Lastname  *string `json:"lastname,omitempty"`
+	Username  *string `json:"username,omitempty"`
+}
+
+// PostGroupCreateParams defines parameters for PostGroupCreate.
+type PostGroupCreateParams struct {
+	// Group title
 	Name string `json:"name"`
 }
 
-// GetCategoryListParams defines parameters for GetCategoryList.
-type GetCategoryListParams struct {
-	// The category ID
-	CategoryId int `json:"categoryId"`
+// GetGroupListParams defines parameters for GetGroupList.
+type GetGroupListParams struct {
+	// The group ID
+	GroupId int `json:"groupId"`
 }
 
-// GetTemplateCreateParams defines parameters for GetTemplateCreate.
-type GetTemplateCreateParams struct {
-	// Category title
+// PostTemplateCreateParams defines parameters for PostTemplateCreate.
+type PostTemplateCreateParams struct {
+	// Template title
 	Name string `json:"name"`
+
+	// Template subject
+	Subject string `json:"subject"`
+
+	// Template content
+	Content string `json:"content"`
 }
 
-// GetTemplateEditParams defines parameters for GetTemplateEdit.
-type GetTemplateEditParams struct {
-	// Category title
+// PostTemplateEditCheckinParams defines parameters for PostTemplateEditCheckin.
+type PostTemplateEditCheckinParams struct {
+	// Template ID
+	TemplateId int `json:"templateId"`
+
+	// Template title
 	Name string `json:"name"`
+
+	// Template subject
+	Subject string `json:"subject"`
+
+	// Template content
+	Content string `json:"content"`
+}
+
+// PostTemplateEditCheckoutParams defines parameters for PostTemplateEditCheckout.
+type PostTemplateEditCheckoutParams struct {
+	// Template ID
+	TemplateId int `json:"templateId"`
 }
 
 // GetTemplateListParams defines parameters for GetTemplateList.
@@ -45,15 +82,42 @@ type GetTemplateListParams struct {
 	GroupId int `json:"groupId"`
 }
 
-// GetUserCreateParams defines parameters for GetUserCreate.
-type GetUserCreateParams struct {
-	// The user ID
-	UserId int `json:"userId"`
+// PostUserCreateParams defines parameters for PostUserCreate.
+type PostUserCreateParams struct {
+	// The user name
+	Username string `json:"username"`
+
+	// The first name of the user
+	Firstname string `json:"firstname"`
+
+	// The last name of the user
+	Lastname string `json:"lastname"`
+
+	// The password
+	Password string `json:"password"`
 }
 
-// GetUserListParams defines parameters for GetUserList.
-type GetUserListParams struct {
-	// The user ID
-	UserId int `json:"userId"`
+// GetUserLoginParams defines parameters for GetUserLogin.
+type GetUserLoginParams struct {
+	// The user name
+	Username string `json:"username"`
+
+	// The user password
+	Password string `json:"password"`
+}
+
+// PostUserModifyUserIdParams defines parameters for PostUserModifyUserId.
+type PostUserModifyUserIdParams struct {
+	// The user name
+	Username string `json:"username"`
+
+	// The first name of the user
+	Firstname string `json:"firstname"`
+
+	// The last name of the user
+	Lastname string `json:"lastname"`
+
+	// The password
+	Password string `json:"password"`
 }
 

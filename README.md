@@ -48,3 +48,15 @@ Prerequisites: You need to have python 3 installed.
 go get .
 go test
 ```
+
+### Python scripts
+Install dependencies:
+```
+pip install openapi-python-client
+```
+
+Genereate python api to access server:
+```
+cd scripts
+openapi-python-client update --path ../schablone-api.yaml
+```

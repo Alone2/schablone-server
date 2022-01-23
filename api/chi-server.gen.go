@@ -15,35 +15,44 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (GET category/create)
-	GetCategoryCreate(w http.ResponseWriter, r *http.Request, params GetCategoryCreateParams)
+	// (POST /group/create)
+	PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams)
 
-	// (GET category/get/{categoryId})
-	GetCategoryGetCategoryId(w http.ResponseWriter, r *http.Request, categoryId int)
+	// (GET /group/get/{groupId})
+	GetGroupGetGroupId(w http.ResponseWriter, r *http.Request, groupId int)
 
-	// (GET category/list)
-	GetCategoryList(w http.ResponseWriter, r *http.Request, params GetCategoryListParams)
+	// (GET /group/list)
+	GetGroupList(w http.ResponseWriter, r *http.Request, params GetGroupListParams)
 
-	// (GET template/create)
-	GetTemplateCreate(w http.ResponseWriter, r *http.Request, params GetTemplateCreateParams)
+	// (POST /template/create)
+	PostTemplateCreate(w http.ResponseWriter, r *http.Request, params PostTemplateCreateParams)
 
-	// (GET template/edit)
-	GetTemplateEdit(w http.ResponseWriter, r *http.Request, params GetTemplateEditParams)
+	// (POST /template/edit/checkin)
+	PostTemplateEditCheckin(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckinParams)
 
-	// (GET template/list)
+	// (POST /template/edit/checkout)
+	PostTemplateEditCheckout(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckoutParams)
+
+	// (GET /template/get/{templateId})
+	GetTemplateGetTemplateId(w http.ResponseWriter, r *http.Request, templateId int)
+
+	// (GET /template/list)
 	GetTemplateList(w http.ResponseWriter, r *http.Request, params GetTemplateListParams)
 
-	// (GET user/create)
-	GetUserCreate(w http.ResponseWriter, r *http.Request, params GetUserCreateParams)
+	// (POST /user/create)
+	PostUserCreate(w http.ResponseWriter, r *http.Request, params PostUserCreateParams)
 
-	// (GET user/get/{userId})
+	// (GET /user/get/{userId})
 	GetUserGetUserId(w http.ResponseWriter, r *http.Request, userId int)
 
-	// (GET user/list)
-	GetUserList(w http.ResponseWriter, r *http.Request, params GetUserListParams)
+	// (GET /user/list)
+	GetUserList(w http.ResponseWriter, r *http.Request)
 
-	// (GET user/set/{userId})
-	GetUserSetUserId(w http.ResponseWriter, r *http.Request, userId int)
+	// (GET /user/login)
+	GetUserLogin(w http.ResponseWriter, r *http.Request, params GetUserLoginParams)
+
+	// (POST /user/modify/{userId})
+	PostUserModifyUserId(w http.ResponseWriter, r *http.Request, userId int, params PostUserModifyUserIdParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -55,8 +64,8 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
 
-// GetCategoryCreate operation middleware
-func (siw *ServerInterfaceWrapper) GetCategoryCreate(w http.ResponseWriter, r *http.Request) {
+// PostGroupCreate operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -64,7 +73,7 @@ func (siw *ServerInterfaceWrapper) GetCategoryCreate(w http.ResponseWriter, r *h
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetCategoryCreateParams
+	var params PostGroupCreateParams
 
 	// ------------- Required query parameter "name" -------------
 	if paramValue := r.URL.Query().Get("name"); paramValue != "" {
@@ -81,7 +90,7 @@ func (siw *ServerInterfaceWrapper) GetCategoryCreate(w http.ResponseWriter, r *h
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetCategoryCreate(w, r, params)
+		siw.Handler.PostGroupCreate(w, r, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -91,25 +100,25 @@ func (siw *ServerInterfaceWrapper) GetCategoryCreate(w http.ResponseWriter, r *h
 	handler(w, r.WithContext(ctx))
 }
 
-// GetCategoryGetCategoryId operation middleware
-func (siw *ServerInterfaceWrapper) GetCategoryGetCategoryId(w http.ResponseWriter, r *http.Request) {
+// GetGroupGetGroupId operation middleware
+func (siw *ServerInterfaceWrapper) GetGroupGetGroupId(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
 
-	// ------------- Path parameter "categoryId" -------------
-	var categoryId int
+	// ------------- Path parameter "groupId" -------------
+	var groupId int
 
-	err = runtime.BindStyledParameter("simple", false, "categoryId", chi.URLParam(r, "categoryId"), &categoryId)
+	err = runtime.BindStyledParameter("simple", false, "groupId", chi.URLParam(r, "groupId"), &groupId)
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "categoryId", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
 		return
 	}
 
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetCategoryGetCategoryId(w, r, categoryId)
+		siw.Handler.GetGroupGetGroupId(w, r, groupId)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -119,8 +128,8 @@ func (siw *ServerInterfaceWrapper) GetCategoryGetCategoryId(w http.ResponseWrite
 	handler(w, r.WithContext(ctx))
 }
 
-// GetCategoryList operation middleware
-func (siw *ServerInterfaceWrapper) GetCategoryList(w http.ResponseWriter, r *http.Request) {
+// GetGroupList operation middleware
+func (siw *ServerInterfaceWrapper) GetGroupList(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -128,24 +137,24 @@ func (siw *ServerInterfaceWrapper) GetCategoryList(w http.ResponseWriter, r *htt
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetCategoryListParams
+	var params GetGroupListParams
 
-	// ------------- Required query parameter "categoryId" -------------
-	if paramValue := r.URL.Query().Get("categoryId"); paramValue != "" {
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
 
 	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "categoryId"})
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
 		return
 	}
 
-	err = runtime.BindQueryParameter("form", true, true, "categoryId", r.URL.Query(), &params.CategoryId)
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "categoryId", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
 		return
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetCategoryList(w, r, params)
+		siw.Handler.GetGroupList(w, r, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -155,8 +164,8 @@ func (siw *ServerInterfaceWrapper) GetCategoryList(w http.ResponseWriter, r *htt
 	handler(w, r.WithContext(ctx))
 }
 
-// GetTemplateCreate operation middleware
-func (siw *ServerInterfaceWrapper) GetTemplateCreate(w http.ResponseWriter, r *http.Request) {
+// PostTemplateCreate operation middleware
+func (siw *ServerInterfaceWrapper) PostTemplateCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -164,7 +173,7 @@ func (siw *ServerInterfaceWrapper) GetTemplateCreate(w http.ResponseWriter, r *h
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetTemplateCreateParams
+	var params PostTemplateCreateParams
 
 	// ------------- Required query parameter "name" -------------
 	if paramValue := r.URL.Query().Get("name"); paramValue != "" {
@@ -180,8 +189,36 @@ func (siw *ServerInterfaceWrapper) GetTemplateCreate(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Required query parameter "subject" -------------
+	if paramValue := r.URL.Query().Get("subject"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "subject"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "subject", r.URL.Query(), &params.Subject)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "subject", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "content" -------------
+	if paramValue := r.URL.Query().Get("content"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "content"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "content", r.URL.Query(), &params.Content)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "content", Err: err})
+		return
+	}
+
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetTemplateCreate(w, r, params)
+		siw.Handler.PostTemplateCreate(w, r, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -191,8 +228,8 @@ func (siw *ServerInterfaceWrapper) GetTemplateCreate(w http.ResponseWriter, r *h
 	handler(w, r.WithContext(ctx))
 }
 
-// GetTemplateEdit operation middleware
-func (siw *ServerInterfaceWrapper) GetTemplateEdit(w http.ResponseWriter, r *http.Request) {
+// PostTemplateEditCheckin operation middleware
+func (siw *ServerInterfaceWrapper) PostTemplateEditCheckin(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -200,7 +237,21 @@ func (siw *ServerInterfaceWrapper) GetTemplateEdit(w http.ResponseWriter, r *htt
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetTemplateEditParams
+	var params PostTemplateEditCheckinParams
+
+	// ------------- Required query parameter "templateId" -------------
+	if paramValue := r.URL.Query().Get("templateId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "templateId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "templateId", r.URL.Query(), &params.TemplateId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "templateId", Err: err})
+		return
+	}
 
 	// ------------- Required query parameter "name" -------------
 	if paramValue := r.URL.Query().Get("name"); paramValue != "" {
@@ -216,8 +267,100 @@ func (siw *ServerInterfaceWrapper) GetTemplateEdit(w http.ResponseWriter, r *htt
 		return
 	}
 
+	// ------------- Required query parameter "subject" -------------
+	if paramValue := r.URL.Query().Get("subject"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "subject"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "subject", r.URL.Query(), &params.Subject)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "subject", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "content" -------------
+	if paramValue := r.URL.Query().Get("content"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "content"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "content", r.URL.Query(), &params.Content)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "content", Err: err})
+		return
+	}
+
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetTemplateEdit(w, r, params)
+		siw.Handler.PostTemplateEditCheckin(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostTemplateEditCheckout operation middleware
+func (siw *ServerInterfaceWrapper) PostTemplateEditCheckout(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostTemplateEditCheckoutParams
+
+	// ------------- Required query parameter "templateId" -------------
+	if paramValue := r.URL.Query().Get("templateId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "templateId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "templateId", r.URL.Query(), &params.TemplateId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "templateId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostTemplateEditCheckout(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetTemplateGetTemplateId operation middleware
+func (siw *ServerInterfaceWrapper) GetTemplateGetTemplateId(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "templateId" -------------
+	var templateId int
+
+	err = runtime.BindStyledParameter("simple", false, "templateId", chi.URLParam(r, "templateId"), &templateId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "templateId", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTemplateGetTemplateId(w, r, templateId)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -263,8 +406,8 @@ func (siw *ServerInterfaceWrapper) GetTemplateList(w http.ResponseWriter, r *htt
 	handler(w, r.WithContext(ctx))
 }
 
-// GetUserCreate operation middleware
-func (siw *ServerInterfaceWrapper) GetUserCreate(w http.ResponseWriter, r *http.Request) {
+// PostUserCreate operation middleware
+func (siw *ServerInterfaceWrapper) PostUserCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -272,24 +415,66 @@ func (siw *ServerInterfaceWrapper) GetUserCreate(w http.ResponseWriter, r *http.
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetUserCreateParams
+	var params PostUserCreateParams
 
-	// ------------- Required query parameter "userId" -------------
-	if paramValue := r.URL.Query().Get("userId"); paramValue != "" {
+	// ------------- Required query parameter "username" -------------
+	if paramValue := r.URL.Query().Get("username"); paramValue != "" {
 
 	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "username"})
 		return
 	}
 
-	err = runtime.BindQueryParameter("form", true, true, "userId", r.URL.Query(), &params.UserId)
+	err = runtime.BindQueryParameter("form", true, true, "username", r.URL.Query(), &params.Username)
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "username", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "firstname" -------------
+	if paramValue := r.URL.Query().Get("firstname"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "firstname"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "firstname", r.URL.Query(), &params.Firstname)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "firstname", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "lastname" -------------
+	if paramValue := r.URL.Query().Get("lastname"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lastname"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "lastname", r.URL.Query(), &params.Lastname)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lastname", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "password" -------------
+	if paramValue := r.URL.Query().Get("password"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "password"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "password", r.URL.Query(), &params.Password)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "password", Err: err})
 		return
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetUserCreate(w, r, params)
+		siw.Handler.PostUserCreate(w, r, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -331,29 +516,10 @@ func (siw *ServerInterfaceWrapper) GetUserGetUserId(w http.ResponseWriter, r *ht
 func (siw *ServerInterfaceWrapper) GetUserList(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var err error
-
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetUserListParams
-
-	// ------------- Required query parameter "userId" -------------
-	if paramValue := r.URL.Query().Get("userId"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "userId", r.URL.Query(), &params.UserId)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
-		return
-	}
-
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetUserList(w, r, params)
+		siw.Handler.GetUserList(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -363,8 +529,58 @@ func (siw *ServerInterfaceWrapper) GetUserList(w http.ResponseWriter, r *http.Re
 	handler(w, r.WithContext(ctx))
 }
 
-// GetUserSetUserId operation middleware
-func (siw *ServerInterfaceWrapper) GetUserSetUserId(w http.ResponseWriter, r *http.Request) {
+// GetUserLogin operation middleware
+func (siw *ServerInterfaceWrapper) GetUserLogin(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUserLoginParams
+
+	// ------------- Required query parameter "username" -------------
+	if paramValue := r.URL.Query().Get("username"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "username"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "username", r.URL.Query(), &params.Username)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "username", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "password" -------------
+	if paramValue := r.URL.Query().Get("password"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "password"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "password", r.URL.Query(), &params.Password)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "password", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetUserLogin(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// PostUserModifyUserId operation middleware
+func (siw *ServerInterfaceWrapper) PostUserModifyUserId(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -380,8 +596,67 @@ func (siw *ServerInterfaceWrapper) GetUserSetUserId(w http.ResponseWriter, r *ht
 
 	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostUserModifyUserIdParams
+
+	// ------------- Required query parameter "username" -------------
+	if paramValue := r.URL.Query().Get("username"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "username"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "username", r.URL.Query(), &params.Username)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "username", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "firstname" -------------
+	if paramValue := r.URL.Query().Get("firstname"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "firstname"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "firstname", r.URL.Query(), &params.Firstname)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "firstname", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "lastname" -------------
+	if paramValue := r.URL.Query().Get("lastname"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lastname"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "lastname", r.URL.Query(), &params.Lastname)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lastname", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "password" -------------
+	if paramValue := r.URL.Query().Get("password"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "password"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "password", r.URL.Query(), &params.Password)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "password", Err: err})
+		return
+	}
+
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetUserSetUserId(w, r, userId)
+		siw.Handler.PostUserModifyUserId(w, r, userId, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -505,34 +780,43 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"category/create", wrapper.GetCategoryCreate)
+		r.Post(options.BaseURL+"/group/create", wrapper.PostGroupCreate)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"category/get/{categoryId}", wrapper.GetCategoryGetCategoryId)
+		r.Get(options.BaseURL+"/group/get/{groupId}", wrapper.GetGroupGetGroupId)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"category/list", wrapper.GetCategoryList)
+		r.Get(options.BaseURL+"/group/list", wrapper.GetGroupList)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"template/create", wrapper.GetTemplateCreate)
+		r.Post(options.BaseURL+"/template/create", wrapper.PostTemplateCreate)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"template/edit", wrapper.GetTemplateEdit)
+		r.Post(options.BaseURL+"/template/edit/checkin", wrapper.PostTemplateEditCheckin)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"template/list", wrapper.GetTemplateList)
+		r.Post(options.BaseURL+"/template/edit/checkout", wrapper.PostTemplateEditCheckout)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"user/create", wrapper.GetUserCreate)
+		r.Get(options.BaseURL+"/template/get/{templateId}", wrapper.GetTemplateGetTemplateId)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"user/get/{userId}", wrapper.GetUserGetUserId)
+		r.Get(options.BaseURL+"/template/list", wrapper.GetTemplateList)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"user/list", wrapper.GetUserList)
+		r.Post(options.BaseURL+"/user/create", wrapper.PostUserCreate)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"user/set/{userId}", wrapper.GetUserSetUserId)
+		r.Get(options.BaseURL+"/user/get/{userId}", wrapper.GetUserGetUserId)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/user/list", wrapper.GetUserList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/user/login", wrapper.GetUserLogin)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/user/modify/{userId}", wrapper.PostUserModifyUserId)
 	})
 
 	return r
