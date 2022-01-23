@@ -59,7 +59,8 @@ docker-compose exec mariadb sh -c 'mysql -h 0.0.0.0 -u root -p '
 
 ### Populate Database With Quicktext Data
 <a name="debugging_populate"/>
-Prerequisites: You need to have python 3 installed and followed the following instructions:
+Prerequisites: You need to have python 3 installed and already have followed the following instructions:
+
 * [Python Scripts](#python)  
 
 ```
@@ -97,6 +98,7 @@ go test
 ### Python scripts
 <a name="python"/>
 Setup virtual environement and install dependencies:
+
 ```
 cd scripts
 python -m venv schablone-python
@@ -105,6 +107,7 @@ pip install -r requirements.txt
 ```
 
 Update python client api:
+
 ```
 cd scripts
 source schablone-python/bin/activate
