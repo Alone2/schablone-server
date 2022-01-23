@@ -7,6 +7,7 @@ require (
 	github.com/getkin/kin-openapi v0.87.0
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-sql-driver/mysql v1.6.0
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 )
 
 require (

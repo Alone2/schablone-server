@@ -2,6 +2,7 @@
 
 * [Documentation API](#documentation)  
 * [Installation Using Docker](#docker)  
+* [Usage](#usage)  
 * [Debugging](#debugging)  
     * [Access Database](#debugging_db)  
     * [Debugging](#debugging_populate)  
@@ -36,6 +37,14 @@ MARIADB_HOST=mariadb" > .mariadb.env
 
 # Start server
 docker-compose up -d
+```
+
+## Usage
+<a name="usage"/>
+
+Sign in with the default password:
+```
+curl "http://0.0.0.0:8080/user/login?username=admin&password=12345"
 ```
 
 ## Debugging

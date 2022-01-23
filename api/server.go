@@ -65,7 +65,7 @@ func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request
 	// api_key := w.Header().Get("X-API-Key")
 
 	// Execute request
-	results, err := s.executeOnDB("INSERT INTO TemplateGroup(Name) values (?)", params.Name)
+	results, err := s.executeOnDB("INSERT INTO TemplateGroup(Name,ParentTempalteGroup) values (?,?)", params.Name, params.ParentGroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -158,7 +158,15 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 
 // (POST /user/create)
 func (s *SchabloneServer) PostUserCreate(w http.ResponseWriter, r *http.Request, params PostUserCreateParams) {
-	panic("not implemented") // TODO: Implement
+	userId, err := s.createUser(params.Username, params.Firstname, params.Lastname, params.Password)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(userId)
 }
 
 // (GET /user/get/{userId})
@@ -173,7 +181,15 @@ func (s *SchabloneServer) GetUserList(w http.ResponseWriter, r *http.Request) {
 
 // (GET /user/login)
 func (s *SchabloneServer) GetUserLogin(w http.ResponseWriter, r *http.Request, params GetUserLoginParams) {
-	panic("not implemented") // TODO: Implement
+	apiKey, err := s.verifyUser(params.Username, params.Password)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(apiKey)
 }
 
 // (POST /user/modify/{userId})
