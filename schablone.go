@@ -27,10 +27,13 @@ func main() {
 	mariadbUser := os.Args[2]
 	mariadbPassword := os.Args[3]
 	mariadbHost := os.Args[4]
+	fmt.Println("MariaDB:")
+	fmt.Println("  Host:", mariadbHost)
+	fmt.Println("  Port:", argumentPort)
+	fmt.Println("  User:", mariadbUser)
 
 	// Check if port valid
 	intPort, err := strconv.Atoi(argumentPort)
-	fmt.Println(intPort)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Invalid port, launch the application like this ./schablone-server ${PORT} ${MARIADB_USER} ${MARIADB_PASSWORD} ${MARIADB_HOST}")
 		os.Exit(1)

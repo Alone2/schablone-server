@@ -1,8 +1,8 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
-	"json"
 	"log"
 	"net/http"
 
@@ -25,48 +25,22 @@ func NewSchabloneServer(mariadbUsername string, mariadbPassword string, mariadbH
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
-
-	fmt.Println("Hello")
+	// defer db.Close()
 
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	fmt.Println("Connected to:", version)
 
-	return &SchabloneServer{
+	s := &SchabloneServer{
 		db: db,
 	}
+	s.initializeDB()
+	return s
 }
 
 // No permissions
 func (s *SchabloneServer) noPermissions(w http.ResponseWriter) {
 	w.WriteHeader(405)
-}
-
-// Execute request on DB
-func (s *SchabloneServer) executeOnDB(prepateStatement string, args ...interface{}) (int64, error) {
-	tx, err := s.db.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-	stmt, err := tx.Prepare(prepateStatement)
-	if err != nil {
-		log.Printf("Error %s", err)
-		return -1, err
-	}
-	data, err := stmt.Exec(args)
-	if err != nil {
-		log.Printf("Error %s", err)
-		tx.Rollback()
-		return -1, err
-	}
-	err = tx.Commit()
-	if err != nil {
-		log.Fatal(err)
-		return -1, err
-	}
-	id, err := data.LastInsertId()
-	return id, err
 }
 
 // VS-Code: Generate Interface : s *SchabloneServer ServerInterface
@@ -93,7 +67,7 @@ func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Reques
 
 // (POST /group/create)
 func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams) {
-	w.WriteHeader(http.StatusOK)
+	// api_key := w.Header().Get("X-API-Key")
 
 	// Execute request
 	results, err := s.executeOnDB("INSERT INTO TemplateGroup(Name) values (?)", params.Name)
