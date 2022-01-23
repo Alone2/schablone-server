@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Schablone Server
   description: E-Mail Template Management System
-  version: 0.0.1
+  version: 0.0.2
 security:
   - ApiKeyAuth: []
 paths:
@@ -368,7 +368,7 @@ components:
         groupIds:
           type: array
           items:
-            type: int
+            type: integer
     Template:
       type: object
       properties:
