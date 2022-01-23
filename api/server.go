@@ -894,7 +894,7 @@ func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *htt
 
 	var template Template
 	template.AttachementIds = &[]int{}
-	// Get Macro
+	// Get Template
 	rows, err := s.queryDB("SELECT Id, Name, Content, Subject, IsBeingEditedBy FROM Template WHERE Id=?", templateId)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -902,7 +902,7 @@ func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *htt
 		return
 	}
 	for rows.Next() {
-		err := rows.Scan(&template.Id, &template.Title, &template.Content, &template.IsBeingEditedBy)
+		err := rows.Scan(&template.Id, &template.Title, &template.Content, &template.Subject, &template.IsBeingEditedBy)
 		if err != nil {
 			log.Printf("Error %s", err)
 			w.WriteHeader(400)
