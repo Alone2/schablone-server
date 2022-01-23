@@ -16,17 +16,20 @@ type Group struct {
 
 // Macro defines model for Macro.
 type Macro struct {
-	Content *string `json:"content,omitempty"`
-	Id      *int    `json:"id,omitempty"`
-	Title   *string `json:"title,omitempty"`
+	Content         *string `json:"content,omitempty"`
+	Id              *int    `json:"id,omitempty"`
+	IsBeingEditedBy *int    `json:"isBeingEditedBy,omitempty"`
+	Title           *string `json:"title,omitempty"`
 }
 
 // Template defines model for Template.
 type Template struct {
-	AttachementIds *[]int  `json:"attachementIds,omitempty"`
-	Content        *string `json:"content,omitempty"`
-	Id             *int    `json:"id,omitempty"`
-	Title          *string `json:"title,omitempty"`
+	AttachementIds  *[]int  `json:"attachementIds,omitempty"`
+	Content         *string `json:"content,omitempty"`
+	Id              *int    `json:"id,omitempty"`
+	IsBeingEditedBy *int    `json:"isBeingEditedBy,omitempty"`
+	Subject         *string `json:"subject,omitempty"`
+	Title           *string `json:"title,omitempty"`
 }
 
 // User defines model for User.

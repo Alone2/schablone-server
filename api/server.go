@@ -47,17 +47,47 @@ func (s *SchabloneServer) noPermissions(w http.ResponseWriter) {
 
 // (POST /group/add_macro)
 func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Request, params PostGroupAddMacroParams) {
-	panic("not implemented") // TODO: Implement
+	// Access
+
+	// Execute request
+	_, err := s.executeOnDB("INSERT INTO Macro_TemplateGroup(BelongsToMacro,TemplateGroup) values (?,?)", params.MacroId, params.GroupId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // (POST /group/add_template)
 func (s *SchabloneServer) PostGroupAddTemplate(w http.ResponseWriter, r *http.Request, params PostGroupAddTemplateParams) {
-	panic("not implemented") // TODO: Implement
+	// Access
+
+	// Execute request
+	_, err := s.executeOnDB("INSERT INTO Template_TemplateGroup(BelongsToTemplate,TemplateGroup) values (?,?)", params.TemplateId, params.GroupId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // (POST /group/add_user)
 func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Request, params PostGroupAddUserParams) {
 	panic("not implemented") // TODO: Implement
+
+	// Execute request
+	_, err := s.executeOnDB("INSERT INTO User_TemplateGroup(BelongsToUser, TemplateGroup, UserHasWriteAccess, UserHasUserModifyAccess) values (?,?,?,?)", params.UserId, params.GroupId, 1, 0)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // (POST /group/create)
@@ -91,7 +121,26 @@ func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request
 
 // (GET /group/get/{groupId})
 func (s *SchabloneServer) GetGroupGetGroupId(w http.ResponseWriter, r *http.Request, groupId int) {
-	panic("not implemented") // TODO: Implement
+	// Access
+
+	var group Group
+	// Get Group
+	rows, err := s.queryDB("SELECT Id, Name, ParentTemplateGroup FROM TemplateGroup WHERE Id=?", groupId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	for rows.Next() {
+		err := rows.Scan(&group.Id, &group.Name, group.ParentId)
+		if err != nil {
+			log.Printf("Error %s", err)
+			w.WriteHeader(400)
+			return
+		}
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(group)
 }
 
 // (GET /group/list)
@@ -152,7 +201,26 @@ func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.R
 
 // (GET /macro/get/{macroId})
 func (s *SchabloneServer) GetMacroGetMacroId(w http.ResponseWriter, r *http.Request, macroId int) {
-	panic("not implemented") // TODO: Implement
+	// Access
+
+	var macro Macro
+	// Get Macro
+	rows, err := s.queryDB("SELECT Id, Name, Content, IsBeingEditedBy FROM Macro WHERE Id=?", macroId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	for rows.Next() {
+		err := rows.Scan(&macro.Id, &macro.Title, &macro.Content, &macro.IsBeingEditedBy)
+		if err != nil {
+			log.Printf("Error %s", err)
+			w.WriteHeader(400)
+			return
+		}
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(macro)
 }
 
 // (GET /macro/list)
@@ -193,7 +261,27 @@ func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *htt
 
 // (GET /template/get/{templateId})
 func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *http.Request, templateId int) {
-	panic("not implemented") // TODO: Implement
+	// Access
+
+	var template Template
+	template.AttachementIds = &[]int{}
+	// Get Macro
+	rows, err := s.queryDB("SELECT Id, Name, Content, Subject, IsBeingEditedBy FROM Template WHERE Id=?", templateId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	for rows.Next() {
+		err := rows.Scan(&template.Id, &template.Title, &template.Content, &template.IsBeingEditedBy)
+		if err != nil {
+			log.Printf("Error %s", err)
+			w.WriteHeader(400)
+			return
+		}
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(template)
 }
 
 // (GET /template/list)
@@ -216,7 +304,46 @@ func (s *SchabloneServer) PostUserCreate(w http.ResponseWriter, r *http.Request,
 
 // (GET /user/get/{userId})
 func (s *SchabloneServer) GetUserGetUserId(w http.ResponseWriter, r *http.Request, userId int) {
-	panic("not implemented") // TODO: Implement
+	// Access
+
+	var user User
+	// Get User
+	rows, err := s.queryDB("SELECT Id, Firstname, Lastname, Username FROM User WHERE Id=?", userId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	for rows.Next() {
+		err := rows.Scan(&user.Id, &user.Firstname, &user.Lastname, &user.Username)
+		if err != nil {
+			log.Printf("Error %s", err)
+			w.WriteHeader(400)
+			return
+		}
+	}
+
+	user.GroupIds = &[]int{}
+	// Get Groups
+	rows, err = s.queryDB("SELECT TemplateGroup FROM User_TemplateGroup WHERE BelongsToUser=?", userId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	for rows.Next() {
+		var templateGroupId int
+		err := rows.Scan(&templateGroupId)
+		combination := append(*user.GroupIds, templateGroupId)
+		user.GroupIds = &combination
+		if err != nil {
+			log.Printf("Error %s", err)
+			w.WriteHeader(400)
+			return
+		}
+	}
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(user)
 }
 
 // (GET /user/list)

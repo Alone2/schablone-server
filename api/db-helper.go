@@ -164,3 +164,21 @@ func (s *SchabloneServer) verifyAPIToken(apiToken string) (bool, error) {
 	}
 	return false, nil
 }
+
+func (s *SchabloneServer) userHasWriteAccessTo(userId int, userId2 int) (bool, error) {
+}
+
+func (s *SchabloneServer) userHasWriteAccessTo(groupId int) (bool, error) {
+}
+
+func (s *SchabloneServer) userHasReadAccessTo(userId int, userId2 int) (bool, error) {
+}
+
+func (s *SchabloneServer) userHasReadAccessTo(groupId int, userId2 int) (bool, error) {
+}
+
+func (s *SchabloneServer) getTemplateGroup(templateId int) int {
+}
+
+func (s *SchabloneServer) getMacroGroup(templateId int) int {
+}

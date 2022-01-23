@@ -70,7 +70,7 @@ curl "http://0.0.0.0:8080/user/login?username=admin&password=12345"
 API_TOKEN="INSERT_TOKEN_HERE"
 
 # Import scripts
-./scripts/schablone-server-client/import_modules.py http://localhost:8080 ${API_TOKEN} quicktext_module.xml
+./scripts/schablone-server-client/import_macros.py http://localhost:8080 ${API_TOKEN} quicktext_module.xml
 ./scripts/schablone-server-client/import_templates.py http://localhost:8080 ${API_TOKEN} quicktext_template.xml
 ```
 

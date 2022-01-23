@@ -738,6 +738,10 @@ components:
           type: string
         content:
           type: string
+        subject:
+          type: string
+        isBeingEditedBy:
+          type: integer
         attachementIds:
           type: array
           items:
@@ -749,6 +753,8 @@ components:
           type: integer
         title:
           type: string
+        isBeingEditedBy:
+          type: integer
         content:
           type: string
     Group:
