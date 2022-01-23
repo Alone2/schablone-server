@@ -9,36 +9,63 @@ security:
 paths:
   user/list:
     get:
-      parameters:
-        - in: query
-          name: userId
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-          description: The user ID
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: List all users
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
+          description: Successfully fetched all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request
+        '405':
+          description: No permissions
   user/create:
     get:
       parameters:
         - in: query
-          name: userId
+          name: username
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
-          description: The user ID
+          description: The user name
+        - in: query
+          name: firstname
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The first name of the user
+        - in: query
+          name: lastname
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The last name of the user
+        - in: query
+          name: password
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The password
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Create a new user
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
+          description: Successfully created user
+        '400':
+          description: Invalid request
+        '405':
+          description: No permission
   user/get/{userId}:
     get:
       parameters:
@@ -51,11 +78,49 @@ paths:
           description: The user ID
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Get user information
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
-  user/set/{userId}:
+          description: Successfully fetched user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request
+  user/login:
+    get:
+      parameters:
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The user name
+        - in: query
+          name: password
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The user password
+      security:
+        - ApiKeyAuth: []
+      description: Get API key
+      responses:
+        '200':
+          description: Successfully fetched API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request
+        '404':
+          description: Access denied
+
+  user/modify/{userId}:
     get:
       parameters:
         - in: path
@@ -65,45 +130,87 @@ paths:
             type: integer
             minimum: 1
           description: The user ID
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The user name
+        - in: query
+          name: firstname
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The first name of the user
+        - in: query
+          name: lastname
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The last name of the user
+        - in: query
+          name: password
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: The password
       security:
         - ApiKeyAuth: []
       description: List all posts
       responses:
         '200':
           description: Successfully fetched all posts from JSONPlaceholder
-  category/list:
+  group/list:
     get:
       parameters:
         - in: query
-          name: categoryId
+          name: groupId
           required: true
           schema:
             type: integer
             minimum: 1
-          description: The category ID
+          description: The group ID
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: List all groups
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
-  category/get/{categoryId}:
+          description: Successfully fetched list of groups user has permissions to
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid request
+  group/get/{groupId}:
     get:
       parameters:
         - in: path
-          name: categoryId
+          name: groupId
           required: true
           schema:
             type: integer
             minimum: 1
-          description: The category ID
+          description: The group ID
       security:
         - ApiKeyAuth: []
       description: List all posts
       responses:
         '200':
           description: Successfully fetched all posts from JSONPlaceholder
-  category/create:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid request
+  group/create:
     get:
       parameters:
         - in: query
@@ -112,13 +219,36 @@ paths:
           schema:
             type: string
             minimum: 1
-          description: Category title
+          description: Group title
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Create group
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
+          description: Successfully created group
+        '405':
+          description: Group name does already exist
+        '400':
+          description: Invalid request
+  template/edit/checkout:
+    get:
+      parameters:
+        - in: query
+          name: templateId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Template ID
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Template title
+        - in: query
+
   template/create:
     get:
       parameters:
@@ -128,29 +258,92 @@ paths:
           schema:
             type: string
             minimum: 1
-          description: Category title
+          description: Template title
+        - in: query
+          name: subject
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Template subject
+        - in: query
+          name: content
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Template content
       security:
         - ApiKeyAuth: []
       description: List all posts
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
-  template/edit:
+          description: Successfully created template
+        '400':
+          description: Invalid request
+        '405':
+          description: No permission
+  template/edit/checkout:
     get:
       parameters:
+        - in: query
+          name: templateId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Template ID
         - in: query
           name: name
           required: true
           schema:
             type: string
             minimum: 1
-          description: Category title
+          description: Template title
+        - in: query
+          name: subject
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Template subject
+        - in: query
+          name: content
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Template content
       security:
         - ApiKeyAuth: []
-      description: List all posts
+      description: Check out template file to edit it, so that the server will not let someone else edit it at the same time
       responses:
         '200':
-          description: Successfully fetched all posts from JSONPlaceholder
+          description: Successfully checked out template
+        '400':
+          description: Invalid arguments
+        '405':
+          description: File already checked out or no permission
+  template/edit/checkin:
+    get:
+      parameters:
+        - in: query
+          name: templateId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Template ID
+      security:
+        - ApiKeyAuth: []
+      description: Check in changes to a template
+      responses:
+        '200':
+          description: Successfully checked out template
+        '400':
+          description: Invalid check in content
+        '405':
+          description: File not checked out 
   template/list:
     get:
       parameters:
@@ -165,13 +358,13 @@ paths:
       description: List templates of specific group
       responses:
         '200':
-           description: Successfully fetched all posts from JSONPlaceholder
-           content:
-             application/json:
-               schema:
-                 type: array
-                 items:
-                   $ref: '#/components/schemas/Template'
+          description: Successfully fetched all templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
 
 components:
   securitySchemes:
