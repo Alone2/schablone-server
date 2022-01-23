@@ -180,20 +180,119 @@ func (s *SchabloneServer) verifyAPIToken(apiToken string) (int64, error) {
 	return userId, nil
 }
 
-// func (s *SchabloneServer) userHasWriteAccessTo(userId int, userId2 int) (bool, error) {
-// }
+func (s *SchabloneServer) userHasAccesssTo(groupId []int, sqlStatement string, args ...interface{}) (bool, error) {
+	rows, err := s.queryDB(sqlStatement, args...)
+	if err != nil {
+		log.Printf("Error %s", err)
+		log.Printf("Error Hello")
+		return false, err
+	}
+	groups := []int{}
+	for rows.Next() {
+		var groupId int
+		err := rows.Scan(&groupId)
+		if err != nil {
+			log.Printf("Error %s", err)
+			return false, err
+		}
+		groups = append(groups, groupId)
+	}
 
-// func (s *SchabloneServer) userHasWriteAccessTo(groupId int) (bool, error) {
-// }
+	for _, t := range groups {
+		c, err := s.getAllGroupChildern(t)
+		if err != nil {
+			return false, err
+		}
+		for _, group := range c {
+			for _, gId := range groupId {
+				if group == gId {
+					return true, nil
+				}
+			}
+		}
+	}
 
-// func (s *SchabloneServer) userHasReadAccessTo(userId int, userId2 int) (bool, error) {
-// }
+	return false, nil
+}
 
-// func (s *SchabloneServer) userHasReadAccessTo(groupId int, userId2 int) (bool, error) {
-// }
+func (s *SchabloneServer) userHasUserModifyAccessTo(groupId []int, userId int) (bool, error) {
+	return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=? AND UserHasUserModifyAccess=?", userId, true)
+	// return true, nil
+}
+func (s *SchabloneServer) userHasWriteAccessTo(groupId []int, userId int) (bool, error) {
+	return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=? AND UserHasWriteAccess=?", userId, true)
+	// return true, nil
+}
 
-// func (s *SchabloneServer) getTemplateGroup(templateId int) int {
-// }
+func (s *SchabloneServer) userHasReadAccessTo(groupId []int, userId int) (bool, error) {
+	return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=?", userId)
+	// return true, nil
+}
 
-// func (s *SchabloneServer) getMacroGroup(templateId int) int {
-// }
+func (s *SchabloneServer) getTemplateGroups(templateId int) ([]int, error) {
+	groups := []int{}
+	// Get TemplateGroup
+	rows, err := s.queryDB("SELECT TemplateGroup FROM Template JOIN Template_TemplateGroup ON Template.Id = Template_TemplateGroup.BelongsToTemplate WHERE Id=?", templateId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		return []int{}, nil
+	}
+	for rows.Next() {
+		var groupId int
+		err := rows.Scan(&groupId)
+		if err != nil {
+			log.Printf("Error %s", err)
+			return []int{}, nil
+		}
+		groups = append(groups, groupId)
+	}
+	return groups, nil
+}
+
+func (s *SchabloneServer) getMacroGroups(templateId int) ([]int, error) {
+	groups := []int{}
+	// Get TemplateGroup
+	rows, err := s.queryDB("SELECT TemplateGroup FROM Macro JOIN Macro_TemplateGroup ON Macro.Id = Template_TemplateGroup.BelongsToTemplate WHERE Id=?", templateId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		return []int{}, err
+	}
+	for rows.Next() {
+		var groupId int
+		err := rows.Scan(&groupId)
+		if err != nil {
+			log.Printf("Error %s", err)
+			return []int{}, err
+		}
+		groups = append(groups, groupId)
+	}
+	return groups, nil
+}
+
+func (s *SchabloneServer) getAllGroupChildern(template int) ([]int, error) {
+	rows, err := s.queryDB("SELECT Id FROM TemplateGroup WHERE ParentTemplateGroup=?", template)
+	if err != nil {
+		log.Printf("Error %s", err)
+		return []int{}, err
+	}
+	var templateIds []int
+	for rows.Next() {
+		var templateId int
+		err := rows.Scan(&templateId)
+		templateIds = append(templateIds, templateId)
+		if err != nil {
+			log.Printf("Error %s", err)
+			return []int{}, err
+		}
+	}
+	out := []int{template}
+	for _, t := range templateIds {
+		children, err := s.getAllGroupChildern(t)
+		if err != nil {
+			log.Printf("Error %s", err)
+			return []int{}, err
+		}
+		out = append(out, children[:]...)
+	}
+	return out, nil
+}

@@ -83,7 +83,7 @@ type PostGroupCreateParams struct {
 	Name string `json:"name"`
 
 	// Parent Group ID
-	ParentGroupId string `json:"parentGroupId"`
+	ParentGroupId int `json:"parentGroupId"`
 }
 
 // GetGroupListParams defines parameters for GetGroupList.

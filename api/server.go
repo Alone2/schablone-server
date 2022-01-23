@@ -38,15 +38,48 @@ func NewSchabloneServer(mariadbUsername string, mariadbPassword string, mariadbH
 	return s
 }
 
+// func setHeaders(w http.ResponseWriter) {
+// 	w.Header().Add("Access-Control-Allow-Origin", "*")
+// 	w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+// 	w.Header().Add("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with")
+// 	w.Header().Add("Access-Control-Max-Age", "3600")
+// }
+
 // VS-Code: Generate Interface : s *SchabloneServer ServerInterface
 
 // (POST /group/add_macro)
 func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Request, params PostGroupAddMacroParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	// Execute request
-	_, err := s.executeOnDB("INSERT INTO Macro_TemplateGroup(BelongsToMacro,TemplateGroup) values (?,?)", params.MacroId, params.GroupId)
+	_, err = s.executeOnDB("INSERT INTO Macro_TemplateGroup(BelongsToMacro,TemplateGroup) values (?,?)", params.MacroId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -59,10 +92,36 @@ func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Reque
 // (POST /group/add_template)
 func (s *SchabloneServer) PostGroupAddTemplate(w http.ResponseWriter, r *http.Request, params PostGroupAddTemplateParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	// Execute request
-	_, err := s.executeOnDB("INSERT INTO Template_TemplateGroup(BelongsToTemplate,TemplateGroup) values (?,?)", params.TemplateId, params.GroupId)
+	_, err = s.executeOnDB("INSERT INTO Template_TemplateGroup(BelongsToTemplate,TemplateGroup) values (?,?)", params.TemplateId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -76,8 +135,36 @@ func (s *SchabloneServer) PostGroupAddTemplate(w http.ResponseWriter, r *http.Re
 func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Request, params PostGroupAddUserParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasUserModifyAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	// Execute request
-	_, err := s.executeOnDB("INSERT INTO User_TemplateGroup(BelongsToUser, TemplateGroup, UserHasWriteAccess, UserHasUserModifyAccess) values (?,?,?,?)", params.UserId, params.GroupId, 1, 0)
+	_, err = s.executeOnDB("INSERT INTO User_TemplateGroup(BelongsToUser, TemplateGroup, UserHasWriteAccess, UserHasUserModifyAccess) values (?,?,?,?)", params.UserId, params.GroupId, 1, 0)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -90,6 +177,7 @@ func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Reques
 // (POST /group/create)
 func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -101,6 +189,19 @@ func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request
 	// API token Invalid
 	if access <= 0 {
 		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.ParentGroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
 		w.WriteHeader(405)
 		return
 	}
@@ -120,7 +221,34 @@ func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request
 // (GET /group/get/{groupId})
 func (s *SchabloneServer) GetGroupGetGroupId(w http.ResponseWriter, r *http.Request, groupId int) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasReadAccessTo([]int{groupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	var group Group
 	// Get Group
@@ -145,6 +273,20 @@ func (s *SchabloneServer) GetGroupGetGroupId(w http.ResponseWriter, r *http.Requ
 // (GET /group/list)
 func (s *SchabloneServer) GetGroupList(w http.ResponseWriter, r *http.Request, params GetGroupListParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
 
 	var groupList []Group
 	// Get Groups
@@ -172,8 +314,36 @@ func (s *SchabloneServer) GetGroupList(w http.ResponseWriter, r *http.Request, p
 func (s *SchabloneServer) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Request, params PostGroupRemoveMacroParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	// Execute request
-	_, err := s.executeOnDB("DELETE FROM Macro_TemplateGroup WHERE BelongsToMacro=? AND TemplateGroup=?)", params.MacroId, params.GroupId)
+	_, err = s.executeOnDB("DELETE FROM Macro_TemplateGroup WHERE BelongsToMacro=? AND TemplateGroup=?)", params.MacroId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -187,7 +357,35 @@ func (s *SchabloneServer) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Re
 func (s *SchabloneServer) PostGroupChangeParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupChangeParentGroupParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
-	_, err := s.executeOnDB("UPDATE Template SET ParentTemplateGroup=? WHERE Id=?", params.ParentGroupId, params.GroupId)
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.ParentGroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
+	_, err = s.executeOnDB("UPDATE Template SET ParentTemplateGroup=? WHERE Id=?", params.ParentGroupId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(405)
@@ -200,8 +398,36 @@ func (s *SchabloneServer) PostGroupChangeParentGroup(w http.ResponseWriter, r *h
 func (s *SchabloneServer) PostGroupRemoveTemplate(w http.ResponseWriter, r *http.Request, params PostGroupRemoveTemplateParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	// Execute request
-	_, err := s.executeOnDB("DELETE FROM Template_TemplateGroup WHERE BelongsToTemplate=? AND TemplateGroup=?)", params.TemplateId, params.GroupId)
+	_, err = s.executeOnDB("DELETE FROM Template_TemplateGroup WHERE BelongsToTemplate=? AND TemplateGroup=?)", params.TemplateId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -215,8 +441,36 @@ func (s *SchabloneServer) PostGroupRemoveTemplate(w http.ResponseWriter, r *http
 func (s *SchabloneServer) PostGroupRemoveUser(w http.ResponseWriter, r *http.Request, params PostGroupRemoveUserParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasUserModifyAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	// Execute request
-	_, err := s.executeOnDB("DELETE FROM User_TemplateGroup WHERE BelongsToUser=? AND TemplateGroup=?)", params.UserId, params.GroupId)
+	_, err = s.executeOnDB("DELETE FROM User_TemplateGroup WHERE BelongsToUser=? AND TemplateGroup=?)", params.UserId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -229,6 +483,34 @@ func (s *SchabloneServer) PostGroupRemoveUser(w http.ResponseWriter, r *http.Req
 // (POST /macro/create)
 func (s *SchabloneServer) PostMacroCreate(w http.ResponseWriter, r *http.Request, params PostMacroCreateParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.InitialGroup}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	// Execute request
 	templateId, err := s.executeOnDB("INSERT INTO Macro(Name,Content) values (?,?)", params.Name, params.Content)
@@ -251,6 +533,7 @@ func (s *SchabloneServer) PostMacroCreate(w http.ResponseWriter, r *http.Request
 // (POST /macro/edit/checkin)
 func (s *SchabloneServer) PostMacroEditCheckin(w http.ResponseWriter, r *http.Request, params PostMacroEditCheckinParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -262,6 +545,20 @@ func (s *SchabloneServer) PostMacroEditCheckin(w http.ResponseWriter, r *http.Re
 	// API token Invalid
 	if access <= 0 {
 		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	groups, _ := s.getMacroGroups(params.MacroId)
+	perms, err := s.userHasWriteAccessTo(groups, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
 		w.WriteHeader(405)
 		return
 	}
@@ -279,6 +576,7 @@ func (s *SchabloneServer) PostMacroEditCheckin(w http.ResponseWriter, r *http.Re
 // (POST /macro/edit/checkout)
 func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.Request, params PostMacroEditCheckoutParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -290,6 +588,20 @@ func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.R
 	// API token Invalid
 	if access <= 0 {
 		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	groups, _ := s.getMacroGroups(params.MacroId)
+	perms, err := s.userHasWriteAccessTo(groups, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
 		w.WriteHeader(405)
 		return
 	}
@@ -307,7 +619,35 @@ func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.R
 // (GET /macro/get/{macroId})
 func (s *SchabloneServer) GetMacroGetMacroId(w http.ResponseWriter, r *http.Request, macroId int) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	groups, _ := s.getMacroGroups(macroId)
+	perms, err := s.userHasReadAccessTo(groups, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	var macro Macro
 	// Get Macro
@@ -332,7 +672,34 @@ func (s *SchabloneServer) GetMacroGetMacroId(w http.ResponseWriter, r *http.Requ
 // (GET /macro/list)
 func (s *SchabloneServer) GetMacroList(w http.ResponseWriter, r *http.Request, params GetMacroListParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasReadAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	var macroList []Macro
 	// Get Macro
@@ -360,6 +727,34 @@ func (s *SchabloneServer) GetMacroList(w http.ResponseWriter, r *http.Request, p
 func (s *SchabloneServer) PostTemplateCreate(w http.ResponseWriter, r *http.Request, params PostTemplateCreateParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{params.InitialGroup}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	// Execute request
 	templateId, err := s.executeOnDB("INSERT INTO Template(Name,Subject,Content) values (?,?,?)", params.Name, params.Subject, params.Content)
 	if err != nil {
@@ -381,6 +776,7 @@ func (s *SchabloneServer) PostTemplateCreate(w http.ResponseWriter, r *http.Requ
 // (POST /template/edit/checkin)
 func (s *SchabloneServer) PostTemplateEditCheckin(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckinParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -392,6 +788,20 @@ func (s *SchabloneServer) PostTemplateEditCheckin(w http.ResponseWriter, r *http
 	// API token Invalid
 	if access <= 0 {
 		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	groups, _ := s.getTemplateGroups(params.TemplateId)
+	perms, err := s.userHasWriteAccessTo(groups, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
 		w.WriteHeader(405)
 		return
 	}
@@ -409,6 +819,7 @@ func (s *SchabloneServer) PostTemplateEditCheckin(w http.ResponseWriter, r *http
 // (POST /template/edit/checkout)
 func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckoutParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -420,6 +831,20 @@ func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *htt
 	// API token Invalid
 	if access <= 0 {
 		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	groups, _ := s.getTemplateGroups(params.TemplateId)
+	perms, err := s.userHasWriteAccessTo(groups, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
 		w.WriteHeader(405)
 		return
 	}
@@ -437,7 +862,35 @@ func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *htt
 // (GET /template/get/{templateId})
 func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *http.Request, templateId int) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	groups, _ := s.getTemplateGroups(templateId)
+	perms, err := s.userHasReadAccessTo(groups, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
 
 	var template Template
 	template.AttachementIds = &[]int{}
@@ -463,6 +916,35 @@ func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *htt
 // (GET /template/list)
 func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request, params GetTemplateListParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasReadAccessTo([]int{params.GroupId}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	var templateList []Template
 	// Get Macro
 	rows, err := s.queryDB("SELECT Id, Name, Content, Subject, IsBeingEditedBy FROM Template JOIN Template_TemplateGroup ON Template.Id = Template_TemplateGroup.BelongsToTemplate WHERE TemplateGroup=?", params.GroupId)
@@ -490,6 +972,35 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 // (POST /user/create)
 func (s *SchabloneServer) PostUserCreate(w http.ResponseWriter, r *http.Request, params PostUserCreateParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	// Permissions
+	perms, err := s.userHasWriteAccessTo([]int{1}, int(access))
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+	if !perms {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	userId, err := s.createUser(params.Username, params.Firstname, params.Lastname, params.Password)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -504,7 +1015,21 @@ func (s *SchabloneServer) PostUserCreate(w http.ResponseWriter, r *http.Request,
 // (GET /user/get/{userId})
 func (s *SchabloneServer) GetUserGetUserId(w http.ResponseWriter, r *http.Request, userId int) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// Access
+
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
 
 	var user User
 	// Get User
@@ -549,6 +1074,20 @@ func (s *SchabloneServer) GetUserGetUserId(w http.ResponseWriter, r *http.Reques
 // (GET /user/list)
 func (s *SchabloneServer) GetUserList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
 
 	var userList []User
 	// Get User
@@ -609,8 +1148,29 @@ func (s *SchabloneServer) GetUserLogin(w http.ResponseWriter, r *http.Request, p
 func (s *SchabloneServer) PostUserModifyUserId(w http.ResponseWriter, r *http.Request, userId int, params PostUserModifyUserIdParams) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 
+	// Check permission
+	api_key := r.Header.Get("X-API-Key")
+	access, err := s.verifyAPIToken(api_key)
+	if err != nil {
+		log.Printf("Error %s", err)
+		w.WriteHeader(400)
+		return
+	}
+	// API token Invalid
+	if access <= 0 {
+		log.Printf("API Token invalid %s", api_key)
+		w.WriteHeader(405)
+		return
+	}
+
+	if !(access == 0 || access == int64(userId)) {
+		log.Printf("Error %s", err)
+		w.WriteHeader(405)
+		return
+	}
+
 	// Modify User
-	_, err := s.editUser(params.Username, params.Firstname, params.Lastname, params.Password, int64(userId))
+	_, err = s.editUser(params.Username, params.Firstname, params.Lastname, params.Password, int64(userId))
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
