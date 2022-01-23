@@ -47,15 +47,6 @@ type PostGroupAddMacroParams struct {
 	GroupId int `json:"groupId"`
 }
 
-// PostGroupAddParentGroupParams defines parameters for PostGroupAddParentGroup.
-type PostGroupAddParentGroupParams struct {
-	// Parent Group ID
-	ParentGroupId int `json:"parentGroupId"`
-
-	// Group ID
-	GroupId int `json:"groupId"`
-}
-
 // PostGroupAddTemplateParams defines parameters for PostGroupAddTemplate.
 type PostGroupAddTemplateParams struct {
 	// Template ID
@@ -74,10 +65,22 @@ type PostGroupAddUserParams struct {
 	GroupId int `json:"groupId"`
 }
 
+// PostGroupChangeParentGroupParams defines parameters for PostGroupChangeParentGroup.
+type PostGroupChangeParentGroupParams struct {
+	// Parent Group ID
+	ParentGroupId int `json:"parentGroupId"`
+
+	// Group ID
+	GroupId int `json:"groupId"`
+}
+
 // PostGroupCreateParams defines parameters for PostGroupCreate.
 type PostGroupCreateParams struct {
 	// Group title
 	Name string `json:"name"`
+
+	// Parent Group ID
+	ParentGroupId string `json:"parentGroupId"`
 }
 
 // GetGroupListParams defines parameters for GetGroupList.
@@ -90,15 +93,6 @@ type GetGroupListParams struct {
 type PostGroupRemoveMacroParams struct {
 	// Macro ID
 	MacroId int `json:"macroId"`
-
-	// Group ID
-	GroupId int `json:"groupId"`
-}
-
-// PostGroupRemoveParentGroupParams defines parameters for PostGroupRemoveParentGroup.
-type PostGroupRemoveParentGroupParams struct {
-	// Parent Group ID
-	ParentGroupId int `json:"parentGroupId"`
 
 	// Group ID
 	GroupId int `json:"groupId"`

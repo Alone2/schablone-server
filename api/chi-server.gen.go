@@ -18,14 +18,14 @@ type ServerInterface interface {
 	// (POST /group/add_macro)
 	PostGroupAddMacro(w http.ResponseWriter, r *http.Request, params PostGroupAddMacroParams)
 
-	// (POST /group/add_parent_group)
-	PostGroupAddParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupAddParentGroupParams)
-
 	// (POST /group/add_template)
 	PostGroupAddTemplate(w http.ResponseWriter, r *http.Request, params PostGroupAddTemplateParams)
 
 	// (POST /group/add_user)
 	PostGroupAddUser(w http.ResponseWriter, r *http.Request, params PostGroupAddUserParams)
+
+	// (POST /group/change_parent_group)
+	PostGroupChangeParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupChangeParentGroupParams)
 
 	// (POST /group/create)
 	PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams)
@@ -38,9 +38,6 @@ type ServerInterface interface {
 
 	// (POST /group/remove_macro)
 	PostGroupRemoveMacro(w http.ResponseWriter, r *http.Request, params PostGroupRemoveMacroParams)
-
-	// (POST /group/remove_parent_group)
-	PostGroupRemoveParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupRemoveParentGroupParams)
 
 	// (POST /group/remove_template)
 	PostGroupRemoveTemplate(w http.ResponseWriter, r *http.Request, params PostGroupRemoveTemplateParams)
@@ -153,56 +150,6 @@ func (siw *ServerInterfaceWrapper) PostGroupAddMacro(w http.ResponseWriter, r *h
 	handler(w, r.WithContext(ctx))
 }
 
-// PostGroupAddParentGroup operation middleware
-func (siw *ServerInterfaceWrapper) PostGroupAddParentGroup(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	var err error
-
-	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params PostGroupAddParentGroupParams
-
-	// ------------- Required query parameter "parentGroupId" -------------
-	if paramValue := r.URL.Query().Get("parentGroupId"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "parentGroupId"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "parentGroupId", r.URL.Query(), &params.ParentGroupId)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "parentGroupId", Err: err})
-		return
-	}
-
-	// ------------- Required query parameter "groupId" -------------
-	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
-		return
-	}
-
-	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PostGroupAddParentGroup(w, r, params)
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler(w, r.WithContext(ctx))
-}
-
 // PostGroupAddTemplate operation middleware
 func (siw *ServerInterfaceWrapper) PostGroupAddTemplate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -303,6 +250,56 @@ func (siw *ServerInterfaceWrapper) PostGroupAddUser(w http.ResponseWriter, r *ht
 	handler(w, r.WithContext(ctx))
 }
 
+// PostGroupChangeParentGroup operation middleware
+func (siw *ServerInterfaceWrapper) PostGroupChangeParentGroup(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostGroupChangeParentGroupParams
+
+	// ------------- Required query parameter "parentGroupId" -------------
+	if paramValue := r.URL.Query().Get("parentGroupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "parentGroupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "parentGroupId", r.URL.Query(), &params.ParentGroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "parentGroupId", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "groupId" -------------
+	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostGroupChangeParentGroup(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // PostGroupCreate operation middleware
 func (siw *ServerInterfaceWrapper) PostGroupCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -325,6 +322,20 @@ func (siw *ServerInterfaceWrapper) PostGroupCreate(w http.ResponseWriter, r *htt
 	err = runtime.BindQueryParameter("form", true, true, "name", r.URL.Query(), &params.Name)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "parentGroupId" -------------
+	if paramValue := r.URL.Query().Get("parentGroupId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "parentGroupId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "parentGroupId", r.URL.Query(), &params.ParentGroupId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "parentGroupId", Err: err})
 		return
 	}
 
@@ -444,56 +455,6 @@ func (siw *ServerInterfaceWrapper) PostGroupRemoveMacro(w http.ResponseWriter, r
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PostGroupRemoveMacro(w, r, params)
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler(w, r.WithContext(ctx))
-}
-
-// PostGroupRemoveParentGroup operation middleware
-func (siw *ServerInterfaceWrapper) PostGroupRemoveParentGroup(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	var err error
-
-	ctx = context.WithValue(ctx, ApiKeyAuthScopes, []string{""})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params PostGroupRemoveParentGroupParams
-
-	// ------------- Required query parameter "parentGroupId" -------------
-	if paramValue := r.URL.Query().Get("parentGroupId"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "parentGroupId"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "parentGroupId", r.URL.Query(), &params.ParentGroupId)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "parentGroupId", Err: err})
-		return
-	}
-
-	// ------------- Required query parameter "groupId" -------------
-	if paramValue := r.URL.Query().Get("groupId"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "groupId"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "groupId", r.URL.Query(), &params.GroupId)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
-		return
-	}
-
-	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PostGroupRemoveParentGroup(w, r, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1464,13 +1425,13 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/group/add_macro", wrapper.PostGroupAddMacro)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/group/add_parent_group", wrapper.PostGroupAddParentGroup)
-	})
-	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/group/add_template", wrapper.PostGroupAddTemplate)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/group/add_user", wrapper.PostGroupAddUser)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/group/change_parent_group", wrapper.PostGroupChangeParentGroup)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/group/create", wrapper.PostGroupCreate)
@@ -1483,9 +1444,6 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/group/remove_macro", wrapper.PostGroupRemoveMacro)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/group/remove_parent_group", wrapper.PostGroupRemoveParentGroup)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/group/remove_template", wrapper.PostGroupRemoveTemplate)

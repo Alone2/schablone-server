@@ -12,7 +12,7 @@ def _get_kwargs(
     parent_group_id: int,
     group_id: int,
 ) -> Dict[str, Any]:
-    url = "{}/group/remove_parent_group".format(client.base_url)
+    url = "{}/group/change_parent_group".format(client.base_url)
 
     headers: Dict[str, str] = client.get_headers()
     cookies: Dict[str, Any] = client.get_cookies()
@@ -49,7 +49,7 @@ def sync_detailed(
     parent_group_id: int,
     group_id: int,
 ) -> Response[Any]:
-    """Remove group parent from group
+    """Add group parent to group
 
     Args:
         parent_group_id (int):
@@ -79,7 +79,7 @@ async def asyncio_detailed(
     parent_group_id: int,
     group_id: int,
 ) -> Response[Any]:
-    """Remove group parent from group
+    """Add group parent to group
 
     Args:
         parent_group_id (int):

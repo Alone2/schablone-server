@@ -16,8 +16,10 @@ async def importXML(xml_file_name: str):
     for menu in root.iter("menu"):
         group_title = menu.find("title").text
 
-        response : int = await schablone.post_group_create.asyncio(client=client, name=group_title)
-        await schablone.post_group_add_parent_group.asyncio_detailed(client=client, parent_group_id=1, group_id=response)
+        response: int = await schablone.post_group_create.asyncio(client=client, name=group_title)
+        await schablone.post_group_add_parent_group.asyncio_detailed(
+            client=client, parent_group_id=1, group_id=response
+        )
 
         # Templates in these groups
         for texts in menu.iter("text"):
@@ -32,7 +34,11 @@ async def importXML(xml_file_name: str):
                 pass
             # send to server
             schablone.post_template_create.asyncio_detailed(
-                client=client, name=template_name, subject=template_subject, content=template_content,initial_group=response
+                client=client,
+                name=template_name,
+                subject=template_subject,
+                content=template_content,
+                initial_group=response,
             )
             # TODO: Send to correct group
 

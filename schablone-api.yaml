@@ -229,6 +229,13 @@ paths:
             type: string
             minimum: 1
           description: Group title
+        - in: query
+          name: parentGroupId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Parent Group ID
       security:
         - ApiKeyAuth: []
       description: Create group
@@ -674,7 +681,7 @@ paths:
           description: Invalid arguments
         '405':
           description: No permission or action has already taken place
-  /group/add_parent_group:
+  /group/change_parent_group:
     post:
       parameters:
         - in: query
@@ -692,31 +699,6 @@ paths:
       security:
         - ApiKeyAuth: []
       description: Add group parent to group
-      responses:
-        '200':
-          description: Successfully changed group
-        '400':
-          description: Invalid arguments
-        '405':
-          description: No permission or action has already taken place
-  /group/remove_parent_group:
-    post:
-      parameters:
-        - in: query
-          name: parentGroupId
-          required: true
-          schema:
-            type: integer
-          description: Parent Group ID
-        - in: query
-          name: groupId
-          required: true
-          schema:
-            type: integer
-          description: Group ID
-      security:
-        - ApiKeyAuth: []
-      description: Remove group parent from group
       responses:
         '200':
           description: Successfully changed group

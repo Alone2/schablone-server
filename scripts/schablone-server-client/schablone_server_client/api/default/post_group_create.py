@@ -10,6 +10,7 @@ def _get_kwargs(
     *,
     client: AuthenticatedClient,
     name: str,
+    parent_group_id: str,
 ) -> Dict[str, Any]:
     url = "{}/group/create".format(client.base_url)
 
@@ -18,6 +19,8 @@ def _get_kwargs(
 
     params: Dict[str, Any] = {}
     params["name"] = name
+
+    params["parentGroupId"] = parent_group_id
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -57,11 +60,13 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     name: str,
+    parent_group_id: str,
 ) -> Response[Union[Any, int]]:
     """Create group
 
     Args:
         name (str):
+        parent_group_id (str):
 
     Returns:
         Response[Union[Any, int]]
@@ -70,6 +75,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         client=client,
         name=name,
+        parent_group_id=parent_group_id,
     )
 
     response = httpx.request(
@@ -84,11 +90,13 @@ def sync(
     *,
     client: AuthenticatedClient,
     name: str,
+    parent_group_id: str,
 ) -> Optional[Union[Any, int]]:
     """Create group
 
     Args:
         name (str):
+        parent_group_id (str):
 
     Returns:
         Response[Union[Any, int]]
@@ -97,6 +105,7 @@ def sync(
     return sync_detailed(
         client=client,
         name=name,
+        parent_group_id=parent_group_id,
     ).parsed
 
 
@@ -104,11 +113,13 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     name: str,
+    parent_group_id: str,
 ) -> Response[Union[Any, int]]:
     """Create group
 
     Args:
         name (str):
+        parent_group_id (str):
 
     Returns:
         Response[Union[Any, int]]
@@ -117,6 +128,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         client=client,
         name=name,
+        parent_group_id=parent_group_id,
     )
 
     async with httpx.AsyncClient(verify=client.verify_ssl) as _client:
@@ -129,11 +141,13 @@ async def asyncio(
     *,
     client: AuthenticatedClient,
     name: str,
+    parent_group_id: str,
 ) -> Optional[Union[Any, int]]:
     """Create group
 
     Args:
         name (str):
+        parent_group_id (str):
 
     Returns:
         Response[Union[Any, int]]
@@ -143,5 +157,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             name=name,
+            parent_group_id=parent_group_id,
         )
     ).parsed

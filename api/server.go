@@ -50,11 +50,6 @@ func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Reque
 	panic("not implemented") // TODO: Implement
 }
 
-// (POST /group/add_parent_group)
-func (s *SchabloneServer) PostGroupAddParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupAddParentGroupParams) {
-	panic("not implemented") // TODO: Implement
-}
-
 // (POST /group/add_template)
 func (s *SchabloneServer) PostGroupAddTemplate(w http.ResponseWriter, r *http.Request, params PostGroupAddTemplateParams) {
 	panic("not implemented") // TODO: Implement
@@ -96,8 +91,8 @@ func (s *SchabloneServer) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Re
 	panic("not implemented") // TODO: Implement
 }
 
-// (POST /group/remove_parent_group)
-func (s *SchabloneServer) PostGroupRemoveParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupRemoveParentGroupParams) {
+// (POST /group/change_parent_group)
+func (s *SchabloneServer) PostGroupChangeParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupChangeParentGroupParams) {
 	panic("not implemented") // TODO: Implement
 }
 
