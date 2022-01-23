@@ -20,9 +20,9 @@ def importXML(xml_file_name: str):
         print("Added Group", group_title, "with ID", response)
         # Templates in these groups
         for texts in menu.iter("text"):
-            template_content = ""
-            template_name = ""
-            template_subject = ""
+            template_content = " "
+            template_name = " "
+            template_subject = " "
             try:
                 template_content = texts.find("body").text
                 template_name = texts.find("name").text
