@@ -1,6 +1,6 @@
 package main
 
-// This code is heavily inspired by the following example of OpenAPI Code Generation:
+// This code is heavily inspired by the following example of "oapi-codegen" OpenAPI Code Generation:
 // https://github.com/deepmap/oapi-codegen/tree/master/examples/petstore-expanded
 
 import (
@@ -9,13 +9,22 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	SchabloneApi "github.com/Alone2/schablone-server/api"
 	"github.com/go-chi/chi/v5"
 )
 
 func main() {
-	var port = flag.Int("port", 8080, "Port for test HTTP server")
+	argumentPort := os.Args[0]
+	intPort, err := strconv.Atoi(argumentPort)
+	fmt.Println(intPort)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Missing port, launch the application like this ./schablone-server ${PORT}")
+		os.Exit(1)
+	}
+
+	var port = flag.Int("port", intPort, "Port for test HTTP server")
 	flag.Parse()
 
 	swagger, err := SchabloneApi.GetSwagger()

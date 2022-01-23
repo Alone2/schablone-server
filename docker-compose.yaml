@@ -3,11 +3,11 @@ services:
   schablone-server:
     build: ./
     restart: always
+    environment:
+      PORT: 8080
 
   mariadb:
     build: ./db
     restart: always
-    environment:
-      MARIADB_ROOT_PASSWORD: example
     env_file:
       - .mariadb.env

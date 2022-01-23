@@ -6,4 +6,6 @@ COPY . .
 RUN go get -d -v . && \
     go build -v .
 
-CMD ["./schablone-server -v"]
+ENV PORT=8080
+
+CMD ./schablone-server $PORT
