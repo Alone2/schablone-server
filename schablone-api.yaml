@@ -230,25 +230,6 @@ paths:
           description: Group name does already exist
         '400':
           description: Invalid request
-  template/edit/checkout:
-    get:
-      parameters:
-        - in: query
-          name: templateId
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-          description: Template ID
-        - in: query
-          name: name
-          required: true
-          schema:
-            type: string
-            minimum: 1
-          description: Template title
-        - in: query
-
   template/create:
     get:
       parameters:
