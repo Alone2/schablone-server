@@ -104,7 +104,7 @@ func (s *SchabloneServer) editUser(username string, firstname string, lastname s
 	hashedPasswordString := string(hashedPassword)
 
 	// Add user to DB
-	_, err = s.executeOnDB("UPDATE User SET Firstname=?, Lastname=?, Username=?, Password=? WHERER Id = ?", firstname, lastname, username, hashedPasswordString, userId)
+	_, err = s.executeOnDB("UPDATE User SET Firstname=?, Lastname=?, Username=?, Password=? WHERE Id = ?", firstname, lastname, username, hashedPasswordString, userId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		return 0, err
