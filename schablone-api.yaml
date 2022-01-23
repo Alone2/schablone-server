@@ -7,7 +7,7 @@ info:
 security:
   - ApiKeyAuth: []
 paths:
-  user/list:
+  /user/list:
     get:
       security:
         - ApiKeyAuth: []
@@ -25,7 +25,7 @@ paths:
           description: Invalid request
         '405':
           description: No permissions
-  user/create:
+  /user/create:
     get:
       parameters:
         - in: query
@@ -66,7 +66,7 @@ paths:
           description: Invalid request
         '405':
           description: No permission
-  user/get/{userId}:
+  /user/get/{userId}:
     get:
       parameters:
         - in: path
@@ -88,7 +88,7 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           description: Invalid request
-  user/login:
+  /user/login:
     get:
       parameters:
         - in: query
@@ -119,8 +119,7 @@ paths:
           description: Invalid request
         '404':
           description: Access denied
-
-  user/modify/{userId}:
+  /user/modify/{userId}:
     get:
       parameters:
         - in: path
@@ -164,7 +163,7 @@ paths:
       responses:
         '200':
           description: Successfully fetched all posts from JSONPlaceholder
-  group/list:
+  /group/list:
     get:
       parameters:
         - in: query
@@ -188,7 +187,7 @@ paths:
                   $ref: '#/components/schemas/Group'
         '400':
           description: Invalid request
-  group/get/{groupId}:
+  /group/get/{groupId}:
     get:
       parameters:
         - in: path
@@ -210,7 +209,7 @@ paths:
                 $ref: '#/components/schemas/Group'
         '400':
           description: Invalid request
-  group/create:
+  /group/create:
     get:
       parameters:
         - in: query
@@ -230,7 +229,7 @@ paths:
           description: Group name does already exist
         '400':
           description: Invalid request
-  template/create:
+  /template/create:
     get:
       parameters:
         - in: query
@@ -264,7 +263,7 @@ paths:
           description: Invalid request
         '405':
           description: No permission
-  template/edit/checkout:
+  /template/edit/checkout:
     get:
       parameters:
         - in: query
@@ -305,7 +304,7 @@ paths:
           description: Invalid arguments
         '405':
           description: File already checked out or no permission
-  template/edit/checkin:
+  /template/edit/checkin:
     get:
       parameters:
         - in: query
@@ -325,7 +324,7 @@ paths:
           description: Invalid check in content
         '405':
           description: File not checked out 
-  template/list:
+  /template/list:
     get:
       parameters:
         - in: query
