@@ -1,7 +1,7 @@
 # schablone-server
 
 * [Documentation API](#documentation)  
-* [Installation Using Docker](#install)  
+* [Installation Using Docker](#docker)  
 * [Debugging](#debugging)  
     * [Access Database](#debugging_db)  
     * [Debugging](#debugging_populate)  
@@ -12,8 +12,11 @@
 
 ## Documentation API
 <a name="documentation"/>
+
 The documentation of the API can be accessed right [here](https://alone2.github.io/schablone-server/).
-![](/docs/screenshot.png)
+
+Screenshot:
+![text](/docs/screenshot.png)
 
 ## Installation Using Docker
 <a name="docker"/>
@@ -40,6 +43,7 @@ docker-compose up -d
 
 ### Connect to Database (Docker)
 <a name="debugging_db"/>
+
 ```
 docker-compose exec mariadb sh -c 'mysql -h 0.0.0.0 -u root -p '
 ```
@@ -58,6 +62,7 @@ Prerequisites: You need to have python 3 installed.
 
 ### Generate OpenApi Code
 <a name="code_generation"/>
+
 ```
 ~/go/bin/oapi-codegen --generate types --package=api schablone-api.yaml > api/types.gen.go
 ~/go/bin/oapi-codegen --generate chi-server --package=api schablone-api.yaml > api/chi-server.gen.go
@@ -66,6 +71,7 @@ Prerequisites: You need to have python 3 installed.
 
 ### Install Go Dependencies (Local Install)
 <a name="go_dependencies"/>
+
 ```
 go get .
 go test
