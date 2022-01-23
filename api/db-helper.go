@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -94,6 +93,26 @@ func (s *SchabloneServer) createUser(username string, firstname string, lastname
 	return userId, err
 }
 
+func (s *SchabloneServer) editUser(username string, firstname string, lastname string, password string, userId int64) (int64, error) {
+	// Hash password
+	passwordBytes := []byte(password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(passwordBytes, bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error %s", err)
+		return 0, err
+	}
+	hashedPasswordString := string(hashedPassword)
+
+	// Add user to DB
+	_, err = s.executeOnDB("UPDATE User SET Firstname=?, Lastname=?, Username=?, Password=? WHERER Id = ?", firstname, lastname, username, hashedPasswordString, userId)
+	if err != nil {
+		log.Printf("Error %s", err)
+		return 0, err
+	}
+
+	return userId, err
+}
+
 // returns API Token
 func (s *SchabloneServer) verifyUser(username string, password string) (string, error) {
 	// Get password out of database
@@ -143,42 +162,38 @@ func (s *SchabloneServer) verifyUser(username string, password string) (string, 
 }
 
 // verifies API Token
-func (s *SchabloneServer) verifyAPIToken(apiToken string) (bool, error) {
-	rows, err := s.queryDB("SELECT count(*) FROM ActiveAPIKey WHERE Content=?", apiToken)
+func (s *SchabloneServer) verifyAPIToken(apiToken string) (int64, error) {
+	rows, err := s.queryDB("SELECT BelongsToUser FROM ActiveAPIKey WHERE Content=?", apiToken)
 	if err != nil {
 		log.Printf("Error %s", err)
-		return false, err
+		return 0, err
 	}
 
-	var value int
+	var userId int64
 	for rows.Next() {
-		err := rows.Scan(&value)
+		err := rows.Scan(&userId)
 		if err != nil {
 			log.Printf("Error %s", err)
-			return false, err
+			return 0, err
 		}
 	}
-	fmt.Println(value)
-	if value >= 1 {
-		return true, nil
-	}
-	return false, nil
+	return userId, nil
 }
 
-func (s *SchabloneServer) userHasWriteAccessTo(userId int, userId2 int) (bool, error) {
-}
+// func (s *SchabloneServer) userHasWriteAccessTo(userId int, userId2 int) (bool, error) {
+// }
 
-func (s *SchabloneServer) userHasWriteAccessTo(groupId int) (bool, error) {
-}
+// func (s *SchabloneServer) userHasWriteAccessTo(groupId int) (bool, error) {
+// }
 
-func (s *SchabloneServer) userHasReadAccessTo(userId int, userId2 int) (bool, error) {
-}
+// func (s *SchabloneServer) userHasReadAccessTo(userId int, userId2 int) (bool, error) {
+// }
 
-func (s *SchabloneServer) userHasReadAccessTo(groupId int, userId2 int) (bool, error) {
-}
+// func (s *SchabloneServer) userHasReadAccessTo(groupId int, userId2 int) (bool, error) {
+// }
 
-func (s *SchabloneServer) getTemplateGroup(templateId int) int {
-}
+// func (s *SchabloneServer) getTemplateGroup(templateId int) int {
+// }
 
-func (s *SchabloneServer) getMacroGroup(templateId int) int {
-}
+// func (s *SchabloneServer) getMacroGroup(templateId int) int {
+// }
