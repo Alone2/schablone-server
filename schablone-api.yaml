@@ -65,7 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                type: int
+                type: integer
                 description: User ID
         '400':
           description: Invalid request
@@ -238,7 +238,7 @@ paths:
           content:
             application/json:
               schema:
-                type: int
+                type: integer
                 description: Group ID
         '405':
           description: Group name does already exist
@@ -277,7 +277,7 @@ paths:
           content:
             application/json:
               schema:
-                type: int
+                type: integer
                 description: Template ID
         '400':
           description: Invalid request
