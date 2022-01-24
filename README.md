@@ -30,9 +30,9 @@ cd schablone-server
 
 # Set mysql root password
 read password
-echo "MARIADB_ROOT_PASSWORD: $password
-MARIADB_USER_PASSWORD: $password
-MARIADB_USER_NAME: root
+echo "MARIADB_ROOT_PASSWORD=$password
+MARIADB_USER_PASSWORD=$password
+MARIADB_USER_NAME=root
 MARIADB_HOST=mariadb" > .mariadb.env
 
 # Start server
