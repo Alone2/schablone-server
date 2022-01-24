@@ -6,6 +6,7 @@
 * [Debugging](#debugging)  
     * [Access Database](#debugging_db)  
     * [Debugging](#debugging_populate)  
+    * [DB Schema](#schema)  
 * [Developemet](#debugging)  
     * [Go Dependencies](#code_generation)  
     * [Go Dependencies](#go_dependencies)  
@@ -76,7 +77,8 @@ API_TOKEN="INSERT_TOKEN_HERE"
 ```
 
 ### DB Schema
-The database schema is in the ./db folder:
+<a name="debugging_populate"/>
+The database SQL CREATE file (as well as the MySQL Workbench file) is in the ./db folder:
 
 ![](/docs/db_schema.svg)
 
