@@ -22,7 +22,7 @@ def importXML(xml_file_name: str):
     for menu in root.iter("script"):
         content = " "
         try:
-            content = texts.find("body").text
+            content = menu.find("body").text
         except:
             pass
         name = menu.find("name").text
