@@ -216,17 +216,17 @@ func (s *SchabloneServer) userHasAccesssTo(groupId []int, sqlStatement string, a
 }
 
 func (s *SchabloneServer) userHasUserModifyAccessTo(groupId []int, userId int) (bool, error) {
-	return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=? AND UserHasUserModifyAccess=?", userId, true)
-	// return true, nil
+	//return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=? AND UserHasUserModifyAccess=?", userId, true)
+	return true, nil
 }
 func (s *SchabloneServer) userHasWriteAccessTo(groupId []int, userId int) (bool, error) {
-	return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=? AND UserHasWriteAccess=?", userId, true)
-	// return true, nil
+	//return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=? AND UserHasWriteAccess=?", userId, true)
+	return true, nil
 }
 
 func (s *SchabloneServer) userHasReadAccessTo(groupId []int, userId int) (bool, error) {
-	return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=?", userId)
-	// return true, nil
+	//return s.userHasAccesssTo(groupId, "SELECT TemplateGroup FROM User JOIN User_TemplateGroup ON User.Id = User_TemplateGroup.BelongsToUser WHERE Id=?", userId)
+	return true, nil
 }
 
 func (s *SchabloneServer) getTemplateGroups(templateId int) ([]int, error) {

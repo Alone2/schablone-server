@@ -85,7 +85,6 @@ func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(400)
 		return
 	}
-
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -259,7 +258,7 @@ func (s *SchabloneServer) GetGroupGetGroupId(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	for rows.Next() {
-		err := rows.Scan(&group.Id, &group.Name, group.ParentId)
+		err := rows.Scan(&group.Id, &group.Name, &group.ParentId)
 		if err != nil {
 			log.Printf("Error %s", err)
 			w.WriteHeader(400)
@@ -298,7 +297,7 @@ func (s *SchabloneServer) GetGroupList(w http.ResponseWriter, r *http.Request, p
 	}
 	for rows.Next() {
 		var group Group
-		err := rows.Scan(&group.Id, &group.Name, group.ParentId)
+		err := rows.Scan(&group.Id, &group.Name, &group.ParentId)
 		groupList = append(groupList, group)
 		if err != nil {
 			log.Printf("Error %s", err)
@@ -940,7 +939,7 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 		return
 	}
 	if !perms {
-		log.Printf("Error %s", err)
+		log.Printf("No permissions %s", access)
 		w.WriteHeader(405)
 		return
 	}
@@ -956,7 +955,7 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 	for rows.Next() {
 		var template Template
 		template.AttachementIds = &[]int{}
-		err := rows.Scan(&template.Id, &template.Title, &template.Content, &template.IsBeingEditedBy)
+		err := rows.Scan(&template.Id, &template.Title, &template.Content, &template.Subject, &template.IsBeingEditedBy)
 		templateList = append(templateList, template)
 
 		if err != nil {
