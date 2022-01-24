@@ -12,7 +12,9 @@ import (
 	"strconv"
 
 	SchabloneApi "github.com/Alone2/schablone-server/api"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func main() {
@@ -57,6 +59,15 @@ func main() {
 
 	// This is how you set up a basic chi router
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	// We now register our petStore above as the handler for the interface
 	SchabloneApi.HandlerFromMux(schabloneServer, r)

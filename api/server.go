@@ -38,18 +38,10 @@ func NewSchabloneServer(mariadbUsername string, mariadbPassword string, mariadbH
 	return s
 }
 
-// func setHeaders(w http.ResponseWriter) {
-// 	w.Header().Add("Access-Control-Allow-Origin", "*")
-// 	w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-// 	w.Header().Add("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with")
-// 	w.Header().Add("Access-Control-Max-Age", "3600")
-// }
-
-// VS-Code: Generate Interface : s *SchabloneServer ServerInterface
+/// VS-Code: Generate Interface : s *SchabloneServer ServerInterface
 
 // (POST /group/add_macro)
 func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Request, params PostGroupAddMacroParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -90,7 +82,6 @@ func (s *SchabloneServer) PostGroupAddMacro(w http.ResponseWriter, r *http.Reque
 
 // (POST /group/add_template)
 func (s *SchabloneServer) PostGroupAddTemplate(w http.ResponseWriter, r *http.Request, params PostGroupAddTemplateParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -132,8 +123,6 @@ func (s *SchabloneServer) PostGroupAddTemplate(w http.ResponseWriter, r *http.Re
 
 // (POST /group/add_user)
 func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Request, params PostGroupAddUserParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -175,8 +164,6 @@ func (s *SchabloneServer) PostGroupAddUser(w http.ResponseWriter, r *http.Reques
 
 // (POST /group/create)
 func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request, params PostGroupCreateParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -219,8 +206,6 @@ func (s *SchabloneServer) PostGroupCreate(w http.ResponseWriter, r *http.Request
 
 // (GET /group/get/{groupId})
 func (s *SchabloneServer) GetGroupGetGroupId(w http.ResponseWriter, r *http.Request, groupId int) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -271,7 +256,6 @@ func (s *SchabloneServer) GetGroupGetGroupId(w http.ResponseWriter, r *http.Requ
 
 // (GET /group/list)
 func (s *SchabloneServer) GetGroupList(w http.ResponseWriter, r *http.Request, params GetGroupListParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -311,8 +295,6 @@ func (s *SchabloneServer) GetGroupList(w http.ResponseWriter, r *http.Request, p
 
 // (POST /group/remove_macro)
 func (s *SchabloneServer) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Request, params PostGroupRemoveMacroParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -354,8 +336,6 @@ func (s *SchabloneServer) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Re
 
 // (POST /group/change_parent_group)
 func (s *SchabloneServer) PostGroupChangeParentGroup(w http.ResponseWriter, r *http.Request, params PostGroupChangeParentGroupParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -395,8 +375,6 @@ func (s *SchabloneServer) PostGroupChangeParentGroup(w http.ResponseWriter, r *h
 
 // (POST /group/remove_template)
 func (s *SchabloneServer) PostGroupRemoveTemplate(w http.ResponseWriter, r *http.Request, params PostGroupRemoveTemplateParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -438,8 +416,6 @@ func (s *SchabloneServer) PostGroupRemoveTemplate(w http.ResponseWriter, r *http
 
 // (POST /group/remove_user)
 func (s *SchabloneServer) PostGroupRemoveUser(w http.ResponseWriter, r *http.Request, params PostGroupRemoveUserParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -481,8 +457,6 @@ func (s *SchabloneServer) PostGroupRemoveUser(w http.ResponseWriter, r *http.Req
 
 // (POST /macro/create)
 func (s *SchabloneServer) PostMacroCreate(w http.ResponseWriter, r *http.Request, params PostMacroCreateParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -531,8 +505,6 @@ func (s *SchabloneServer) PostMacroCreate(w http.ResponseWriter, r *http.Request
 
 // (POST /macro/edit/checkin)
 func (s *SchabloneServer) PostMacroEditCheckin(w http.ResponseWriter, r *http.Request, params PostMacroEditCheckinParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -574,8 +546,6 @@ func (s *SchabloneServer) PostMacroEditCheckin(w http.ResponseWriter, r *http.Re
 
 // (POST /macro/edit/checkout)
 func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.Request, params PostMacroEditCheckoutParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -617,8 +587,6 @@ func (s *SchabloneServer) PostMacroEditCheckout(w http.ResponseWriter, r *http.R
 
 // (GET /macro/get/{macroId})
 func (s *SchabloneServer) GetMacroGetMacroId(w http.ResponseWriter, r *http.Request, macroId int) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -670,8 +638,6 @@ func (s *SchabloneServer) GetMacroGetMacroId(w http.ResponseWriter, r *http.Requ
 
 // (GET /macro/list)
 func (s *SchabloneServer) GetMacroList(w http.ResponseWriter, r *http.Request, params GetMacroListParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -724,8 +690,6 @@ func (s *SchabloneServer) GetMacroList(w http.ResponseWriter, r *http.Request, p
 
 // (POST /template/create)
 func (s *SchabloneServer) PostTemplateCreate(w http.ResponseWriter, r *http.Request, params PostTemplateCreateParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -774,8 +738,6 @@ func (s *SchabloneServer) PostTemplateCreate(w http.ResponseWriter, r *http.Requ
 
 // (POST /template/edit/checkin)
 func (s *SchabloneServer) PostTemplateEditCheckin(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckinParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -817,8 +779,6 @@ func (s *SchabloneServer) PostTemplateEditCheckin(w http.ResponseWriter, r *http
 
 // (POST /template/edit/checkout)
 func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *http.Request, params PostTemplateEditCheckoutParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -860,8 +820,6 @@ func (s *SchabloneServer) PostTemplateEditCheckout(w http.ResponseWriter, r *htt
 
 // (GET /template/get/{templateId})
 func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *http.Request, templateId int) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -914,8 +872,6 @@ func (s *SchabloneServer) GetTemplateGetTemplateId(w http.ResponseWriter, r *htt
 
 // (GET /template/list)
 func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request, params GetTemplateListParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -939,7 +895,7 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 		return
 	}
 	if !perms {
-		log.Printf("No permissions %s", access)
+		log.Printf("No permission")
 		w.WriteHeader(405)
 		return
 	}
@@ -970,8 +926,6 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 
 // (POST /user/create)
 func (s *SchabloneServer) PostUserCreate(w http.ResponseWriter, r *http.Request, params PostUserCreateParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -1013,8 +967,6 @@ func (s *SchabloneServer) PostUserCreate(w http.ResponseWriter, r *http.Request,
 
 // (GET /user/get/{userId})
 func (s *SchabloneServer) GetUserGetUserId(w http.ResponseWriter, r *http.Request, userId int) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
@@ -1072,8 +1024,6 @@ func (s *SchabloneServer) GetUserGetUserId(w http.ResponseWriter, r *http.Reques
 
 // (GET /user/list)
 func (s *SchabloneServer) GetUserList(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
 	if err != nil {
@@ -1131,7 +1081,6 @@ func (s *SchabloneServer) GetUserList(w http.ResponseWriter, r *http.Request) {
 
 // (GET /user/login)
 func (s *SchabloneServer) GetUserLogin(w http.ResponseWriter, r *http.Request, params GetUserLoginParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	apiKey, err := s.verifyUser(params.Username, params.Password)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -1145,8 +1094,6 @@ func (s *SchabloneServer) GetUserLogin(w http.ResponseWriter, r *http.Request, p
 
 // (POST /user/modify/{userId})
 func (s *SchabloneServer) PostUserModifyUserId(w http.ResponseWriter, r *http.Request, userId int, params PostUserModifyUserIdParams) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-
 	// Check permission
 	api_key := r.Header.Get("X-API-Key")
 	access, err := s.verifyAPIToken(api_key)
