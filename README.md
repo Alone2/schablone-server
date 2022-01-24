@@ -78,7 +78,7 @@ API_TOKEN="INSERT_TOKEN_HERE"
 ### DB Schema
 The database schema is in the ./db folder:
 
-![](/docs/db_schema.png)
+![](/docs/db_schema.svg)
 
 ## Development
 <a name="developement"/>
