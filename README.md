@@ -5,7 +5,7 @@
 * [Usage](#usage)  
 * [Debugging](#debugging)  
     * [Access Database](#debugging_db)  
-    * [Debugging](#debugging_populate)  
+    * [Populate With Quicktext Data](#debugging_populate)  
     * [DB Schema](#schema)  
 * [Developemet](#debugging)  
     * [Code Generation](#code_generation)  
