@@ -61,7 +61,7 @@ docker-compose exec mariadb sh -c 'mysql -h 0.0.0.0 -u root -p '
 <a name="debugging_populate"/>
 Prerequisites: You need to have python 3 installed and already have followed the following instructions:
 
-* [Python Scripts](#python)  
+* [Python Scripts](#python)
 
 ```
 # GET API token
@@ -74,6 +74,11 @@ API_TOKEN="INSERT_TOKEN_HERE"
 ./scripts/schablone-server-client/import_macros.py http://localhost:8080 ${API_TOKEN} quicktext_module.xml
 ./scripts/schablone-server-client/import_templates.py http://localhost:8080 ${API_TOKEN} quicktext_template.xml
 ```
+
+### DB Schema
+The database schema is in the ./db folder:
+
+![](/docs/db_schema.png)
 
 ## Development
 <a name="developement"/>
