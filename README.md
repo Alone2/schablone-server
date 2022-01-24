@@ -8,7 +8,7 @@
     * [Debugging](#debugging_populate)  
     * [DB Schema](#schema)  
 * [Developemet](#debugging)  
-    * [Go Dependencies](#code_generation)  
+    * [Code Generation](#code_generation)  
     * [Go Dependencies](#go_dependencies)  
     * [Python Scripts](#python)  
 
