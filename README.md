@@ -20,6 +20,8 @@ The documentation of the API can be accessed right [here](https://alone2.github.
 Screenshot:
 ![text](/docs/screenshot.png)
 
+Use [this](https://addons.mozilla.org/en-US/firefox/addon/cors-everywhere/) firefox Add-On to execute requests on the documentation.
+
 ## Installation Using Docker
 <a name="docker"/>
 Prerequisites: You need to have Docker and Docker Compose installed.

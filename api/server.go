@@ -271,7 +271,7 @@ func (s *SchabloneServer) GetGroupList(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 
-	var groupList []Group
+	groupList := []Group{}
 	// Get Groups
 	rows, err := s.queryDB("SELECT Id, Name, ParentTemplateGroup FROM TemplateGroup")
 	if err != nil {
@@ -324,7 +324,7 @@ func (s *SchabloneServer) PostGroupRemoveMacro(w http.ResponseWriter, r *http.Re
 	}
 
 	// Execute request
-	_, err = s.executeOnDB("DELETE FROM Macro_TemplateGroup WHERE BelongsToMacro=? AND TemplateGroup=?)", params.MacroId, params.GroupId)
+	_, err = s.executeOnDB("DELETE FROM Macro_TemplateGroup WHERE BelongsToMacro=? AND TemplateGroup=?", params.MacroId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -364,7 +364,7 @@ func (s *SchabloneServer) PostGroupChangeParentGroup(w http.ResponseWriter, r *h
 		return
 	}
 
-	_, err = s.executeOnDB("UPDATE Template SET ParentTemplateGroup=? WHERE Id=?", params.ParentGroupId, params.GroupId)
+	_, err = s.executeOnDB("UPDATE TemplateGroup SET ParentTemplateGroup=? WHERE Id=?", params.ParentGroupId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(405)
@@ -404,7 +404,7 @@ func (s *SchabloneServer) PostGroupRemoveTemplate(w http.ResponseWriter, r *http
 	}
 
 	// Execute request
-	_, err = s.executeOnDB("DELETE FROM Template_TemplateGroup WHERE BelongsToTemplate=? AND TemplateGroup=?)", params.TemplateId, params.GroupId)
+	_, err = s.executeOnDB("DELETE FROM Template_TemplateGroup WHERE BelongsToTemplate=? AND TemplateGroup=?", params.TemplateId, params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
 		w.WriteHeader(400)
@@ -666,7 +666,7 @@ func (s *SchabloneServer) GetMacroList(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 
-	var macroList []Macro
+	macroList := []Macro{}
 	// Get Macro
 	rows, err := s.queryDB("SELECT Id, Name, Content, IsBeingEditedBy FROM Macro JOIN Macro_TemplateGroup ON Macro.Id = Macro_TemplateGroup.BelongsToMacro WHERE TemplateGroup=?", params.GroupId)
 	if err != nil {
@@ -900,8 +900,8 @@ func (s *SchabloneServer) GetTemplateList(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	var templateList []Template
-	// Get Macro
+	templateList := []Template{}
+	// Get Template
 	rows, err := s.queryDB("SELECT Id, Name, Content, Subject, IsBeingEditedBy FROM Template JOIN Template_TemplateGroup ON Template.Id = Template_TemplateGroup.BelongsToTemplate WHERE TemplateGroup=?", params.GroupId)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -1038,7 +1038,7 @@ func (s *SchabloneServer) GetUserList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var userList []User
+	userList := []User{}
 	// Get User
 	rows, err := s.queryDB("SELECT Id, Firstname, Lastname, Username FROM User")
 	if err != nil {
@@ -1056,15 +1056,15 @@ func (s *SchabloneServer) GetUserList(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Get Groups
-		rows, err = s.queryDB("SELECT TemplateGroup FROM User_TemplateGroup WHERE BelongsToUser=?", user.Id)
+		groupRows, err := s.queryDB("SELECT TemplateGroup FROM User_TemplateGroup WHERE BelongsToUser=?", user.Id)
 		if err != nil {
 			log.Printf("Error %s", err)
 			w.WriteHeader(400)
 			return
 		}
-		for rows.Next() {
+		for groupRows.Next() {
 			var templateGroupId int
-			err := rows.Scan(&templateGroupId)
+			err := groupRows.Scan(&templateGroupId)
 			combination := append(*user.GroupIds, templateGroupId)
 			user.GroupIds = &combination
 			if err != nil {
